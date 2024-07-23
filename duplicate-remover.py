@@ -1,76 +1,141 @@
 import os
+import tkinter
+
 import icons
-import tkinter as tk
-import tkinter.ttk as ttk
+import customtkinter as tk
 from datetime import datetime
-from tkinter import filedialog
-from tkinter.constants import LEFT, BOTTOM, BOTH, RIGHT, Y, VERTICAL, X, W, TOP, SW, NW
+from customtkinter import filedialog
+from tkinter import ttk, LEFT, BOTTOM, BOTH, RIGHT, Y, VERTICAL, X, W, TOP, SW, NW, DISABLED, NORMAL, HORIZONTAL
 
-BOTTOM_PANEL_BG_COLOR = "light grey"
+TOOLBAR_FG_COLOR = "transparent"
+TOOLBAR_HOVER_COLOR = "gray75"
+TOOLBAR_ICON_COLOR = (104, 104, 104)
+TOOLBAR_HEADER_COLOR = "#343434"
+TOOLBAR_BUTTON_HEIGHT = 30
+TOOLBAR_BUTTON_WIDTH = 40
 
-
-class HoverButton(tk.Button):
-    def __init__(self, master, **kw):
-        tk.Button.__init__(self, master=master, **kw)
-        self.default_bg = self["background"]
-        self.bind("<Enter>", self.on_hover)
-        self.bind("<Leave>", self.on_leave)
-
-    def on_hover(self, e):
-        self.default_bg = self["background"]
-        self.config(background="#d9d1cf")
-
-    def on_leave(self, e):
-        self.config(background=self.default_bg)
+tk.set_appearance_mode("System")  # Modes: system (default), light, dark
+tk.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
 
 
-class FileExplorer(tk.Frame):
-    def __init__(self, parent, **kwargs):
-        super().__init__(parent, **kwargs)
+class App(tk.CTk):
+    def __init__(self):
+        super().__init__()
+
+        self.minsize(1000, 400)
+        self.title("Duplicate remover")
+        self.eval('tk::PlaceWindow . center')
 
         # icon images
-        self.folder_40 = icons.folder(40)
-        self.minus = icons.minus()
-        self.plus = icons.plus()
+        self.folder_22 = icons.folder(26)
 
         self.idx = 1
-        self.root = tk.Frame(self)
-        self.top = tk.Frame(self.root)
-        self.separator = ttk.Separator(self.root, orient=tk.HORIZONTAL)
-        self.bottom = tk.Frame(self.root, bg=BOTTOM_PANEL_BG_COLOR)
 
-        self.add_button = tk.Button(self.bottom, image=self.plus, text="Add", compound=LEFT,
-                                    command=self.browse_directory, highlightthickness=0, borderwidth=-1)
-
-        self.remove_button = tk.Button(self.bottom, image=self.minus, text="Remove", compound=LEFT,
-                                       command=self.remove_directory, highlightthickness=0, borderwidth=-1)
-
-        self.canvas = tk.Canvas(self.top)
-        self.frame = tk.Frame(self.canvas)
-        self.scrollbar = tk.Scrollbar(self.top, orient=VERTICAL, command=self.canvas.yview)
-        self.canvas.configure(yscrollcommand=self.scrollbar.set)
-        self.canvas.create_window(0, 0, window=self.frame)
-        self.frame.bind("<Configure>", self.on_frame_configure)
-
+        # root frame
+        self.root = tk.CTkFrame(self)
         self.root.pack(fill=BOTH, expand=True)
 
-        self.top.pack(side=TOP, fill=BOTH, expand=True)
-        self.separator.pack(side=TOP, fill=X, expand=False)
-        self.bottom.pack(side=BOTTOM, fill=X, expand=False)
+        # toolbar
+        self.toolbar_panel = tk.CTkFrame(self.root)
+        self.toolbar_panel.pack(side=TOP, fill=X, expand=False)
 
-        self.canvas.pack(side=LEFT, fill=BOTH, expand=True)
-        self.scrollbar.pack(side=RIGHT, fill=Y, expand=False)
+        self.top_separator = ttk.Separator(self.root, orient=HORIZONTAL)
+        self.top_separator.pack(side=TOP, fill=X, expand=False, pady=0)
 
-        self.add_button.pack(side=LEFT)
-        self.remove_button.pack(side=LEFT)
+        # main area
+        self.middle = tk.CTkScrollableFrame(self.root, bg_color="grey90", fg_color="grey90")
+        self.middle.pack(side=TOP, fill=BOTH, expand=True)
 
-    def browse_directory(self):
+        self.bottom_separator = ttk.Separator(self.root, orient=HORIZONTAL)
+        self.bottom_separator.pack(side=TOP, fill=X, expand=False, pady=0)
+
+        # status panel
+        self.status_panel = tk.CTkFrame(self.root)
+        self.status_panel.pack(side=TOP, fill=BOTH, expand=False)
+
+        # toolbar elements
+        self.icon_plus = icons.plus(color=TOOLBAR_ICON_COLOR)
+        self.add_button = tk.CTkButton(self.toolbar_panel,
+                                       image=self.icon_plus,
+                                       text="",
+                                       compound="top",
+                                       command=self.browse_directory_to_compare,
+                                       height=TOOLBAR_BUTTON_HEIGHT,
+                                       width=TOOLBAR_BUTTON_WIDTH,
+                                       fg_color=TOOLBAR_FG_COLOR,
+                                       hover_color=TOOLBAR_HOVER_COLOR
+                                       )
+        self.add_button.pack(side=LEFT, padx=5, pady=5)
+
+        self.icon_minus = icons.minus(color=TOOLBAR_ICON_COLOR)
+        self.remove_button = tk.CTkButton(self.toolbar_panel,
+                                          image=self.icon_minus,
+                                          text="",
+                                          compound="top",
+                                          command=self.remove_directory,
+                                          height=TOOLBAR_BUTTON_HEIGHT,
+                                          width=TOOLBAR_BUTTON_WIDTH,
+                                          fg_color=TOOLBAR_FG_COLOR,
+                                          hover_color=TOOLBAR_HOVER_COLOR
+                                          )
+        self.remove_button.pack(side=LEFT, padx=5, pady=5)
+
+        self.name_label = tk.CTkLabel(self.toolbar_panel,
+                                      text="Duplicate remover",
+                                      font=("San Francisco", 18),
+                                      height=20,
+                                      text_color=TOOLBAR_HEADER_COLOR)
+
+        self.name_label.pack(side=LEFT, pady=2, padx=5)
+
+        self.icon_configs = icons.configs(color=TOOLBAR_ICON_COLOR)
+        self.config_button = tk.CTkButton(self.toolbar_panel,
+                                          image=self.icon_configs,
+                                          text="",
+                                          command=self.remove_directory,
+                                          height=TOOLBAR_BUTTON_HEIGHT,
+                                          width=TOOLBAR_BUTTON_WIDTH,
+                                          fg_color=TOOLBAR_FG_COLOR,
+                                          hover_color=TOOLBAR_HOVER_COLOR
+                                          )
+        self.config_button.pack(side=RIGHT, padx=5, pady=5)
+
+        self.destination_folder = tkinter.Variable(self.root, "")
+        self.merge_folder_entry = tk.CTkEntry(self.toolbar_panel, height=TOOLBAR_BUTTON_HEIGHT, state=NORMAL,
+                                              width=400, placeholder_text="Destination folder...", textvariable=self.destination_folder)
+        self.merge_folder_entry.bind("<1>", self.browse_destination_directory)
+        self.merge_folder_entry.pack(side=RIGHT, padx=5, pady=5)
+
+        self.icons_run = icons.run(color=TOOLBAR_ICON_COLOR)
+        self.run_button = tk.CTkButton(self.toolbar_panel,
+                                       image=self.icons_run,
+                                       text="",
+                                       compound="top",
+                                       command=self.remove_directory,
+                                       height=TOOLBAR_BUTTON_HEIGHT,
+                                       width=TOOLBAR_BUTTON_WIDTH,
+                                       fg_color=TOOLBAR_FG_COLOR,
+                                       hover_color=TOOLBAR_HOVER_COLOR
+                                       )
+        self.run_button.pack(side=RIGHT, padx=5, pady=5)
+
+        # status panel elements
+        self.name_label = tk.CTkLabel(self.status_panel, text="···", font=("San Francisco", 18), height=18)
+        self.name_label.pack(side=LEFT, padx=10)
+
+    def browse_directory_to_compare(self, *args):
         home = os.path.expanduser("~")
         directory = filedialog.askdirectory(initialdir=home)
-        if directory:
+        if directory is not None:
             self.add_directory(directory)
 
-    def remove_directory(self):
+    def browse_destination_directory(self, *args):
+        home = os.path.expanduser("~")
+        directory = filedialog.askdirectory(initialdir=home)
+        if directory is not None and os.path.isdir(directory):
+            self.destination_folder.set(directory)
+
+    def remove_directory(self, *args):
         pass
 
     def add_directory(self, directory):
@@ -85,22 +150,24 @@ class FileExplorer(tk.Frame):
             self.idx = self.idx + 1
 
     def create_folder_entry(self, path, size, date, idx):
-        background = "systemTransparent" if idx % 2 == 1 else "grey85"
+        background = "grey90" if idx % 2 == 1 else "grey85"
 
-        frame = tk.Frame(self.frame, bg=background)
+        frame = tk.CTkFrame(self.middle, fg_color=background)
         frame.pack(fill=X, expand=False)
 
-        icon_label = tk.Label(frame, image=self.folder_40, bg=background)
+        icon_label = tk.CTkLabel(frame, text="", image=self.folder_22)
         icon_label.pack(side=LEFT, padx=5)
 
-        name_label = tk.Label(frame, text=path, bg=background, font=("San Francisco", 12))
-        name_label.pack(anchor=W)
+        name_label = tk.CTkLabel(frame, text=path, font=("San Francisco", 12), height=16, bg_color=background)
+        name_label.pack(anchor=W, pady=2)
 
-        size_label = tk.Label(frame, text=f"Size: {size}", font=("San Francisco", 10), fg="grey", bg=background)
-        size_label.pack(anchor=W)
+        size_label = tk.CTkLabel(frame, text=f"Size: {size}", font=("San Francisco", 10), height=14, text_color="grey",
+                                 bg_color=background)
+        size_label.pack(anchor=W, pady=2)
 
-        path_label = tk.Label(frame, text=date, font=("San Francisco", 10), fg="dodger blue", bg=background)
-        path_label.pack(anchor=W)
+        path_label = tk.CTkLabel(frame, text=f"Date: {date}", font=("San Francisco", 10), height=14,
+                                 text_color="dodger blue", bg_color=background)
+        path_label.pack(anchor=W, pady=2)
 
     def get_folder_size(self, path):
         total_size = 0
@@ -121,14 +188,7 @@ class FileExplorer(tk.Frame):
     def date_format(timestamp):
         return datetime.fromtimestamp(timestamp).strftime("%Y-%m-%dT%H:%M:%S")
 
-    def on_frame_configure(self, event):
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
-
 
 if __name__ == "__main__":
-    window = tk.Tk()
-    window.minsize(600, 400)
-    explorer = FileExplorer(window, bg="white")
-
-    explorer.pack(expand=True, fill=BOTH)
-    window.mainloop()
+    app = App()
+    app.mainloop()

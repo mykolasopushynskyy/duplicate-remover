@@ -1,7 +1,5 @@
-import io
-from tkinter import PhotoImage
-
 from PIL import Image, ImageFont, ImageDraw
+from customtkinter import CTkImage
 
 from configs import ICONS_FONT_FILE_PATH
 
@@ -10,16 +8,14 @@ MINUS_SYM = "\ue800"
 PLUS_SYM = "\ue801"
 RUN_SYM = "\ue802"
 SPINNER_SYM = "\ue838"
+PICTURE_FILE_SYM = "\uF1C5"
+UNSPECIFIED_FILE_SYM = "\uE803"
+TEXT_FILE_SYM = "\uF0F6"
+CONFIGS_SYM = "\uE804"
+FILES_SYM = "\uF0C5"
 
 
-def image_to_byte_array(image: Image) -> bytes:
-    img_bytes = io.BytesIO()
-    image.save(img_bytes, format="PNG")
-    img_bytes.seek(0)
-    return img_bytes.read()
-
-
-def get_icon(symbol, font_size, color):
+def get_icon(symbol, font_size, font_color):
     """
     returns a transparent PIL image that contains the text
     txt: the actual text
@@ -41,16 +37,12 @@ def get_icon(symbol, font_size, color):
     font = ImageFont.truetype(font=ICONS_FONT_FILE_PATH, size=font_size)
     image = Image.new(mode="RGBA", size=(width, height), color=(255, 255, 255, 0))
 
-    new_data = []
-    for _ in image.getdata():
-        new_data.append((255, 255, 255, 0))
-
-    image.putdata(new_data)
+    image.putdata([(255, 255, 255, 0) for _ in image.getdata()])
 
     draw = ImageDraw.Draw(im=image)
-    draw.text(xy=(width / 2, height / 2), text=symbol, font=font, fill=color, anchor='mm')
+    draw.text(xy=(width / 2, height / 2), text=symbol, font=font, fill=font_color, anchor="mm")
 
-    photo_image = PhotoImage(data=image_to_byte_array(image))
+    photo_image = CTkImage(light_image=image, dark_image=image, size=(width, height))
     return photo_image
 
 
@@ -72,3 +64,7 @@ def run(font_size=16, color=(0, 0, 0)):
 
 def spinner(font_size=16, color=(0, 0, 0)):
     return get_icon(SPINNER_SYM, font_size, color)
+
+
+def configs(font_size=16, color=(0, 0, 0)):
+    return get_icon(CONFIGS_SYM, font_size, color)
