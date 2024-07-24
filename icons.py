@@ -4,6 +4,7 @@ from customtkinter import CTkImage
 from configs import ICONS_FONT_FILE_PATH
 
 FOLDER_SYM = "\uf114"
+FOLDER_OPEN_SYM = "\uF115"
 MINUS_SYM = "\ue800"
 PLUS_SYM = "\ue801"
 RUN_SYM = "\ue802"
@@ -15,10 +16,10 @@ CONFIGS_SYM = "\uE804"
 FILES_SYM = "\uF0C5"
 
 
-def get_icon(symbol, font_size, font_color):
+def get_icon(symbol: str, font_size: int, font_color: tuple):
     """
     returns a transparent PIL image that contains the text
-    txt: the actual text
+    symbol: the actual text
     font_size: the size of text
     color: the actual text
     """
@@ -31,13 +32,14 @@ def get_icon(symbol, font_size, font_color):
     if type(font_size) is not int:
         raise TypeError("font_size must be a int")
 
+    if type(font_color) is not tuple and len(font_color) != 3:
+        raise TypeError("font_color must be a tuple of size 3")
+
     width = font_size + 5
     height = font_size + 5
 
     font = ImageFont.truetype(font=ICONS_FONT_FILE_PATH, size=font_size)
     image = Image.new(mode="RGBA", size=(width, height), color=(255, 255, 255, 0))
-
-    image.putdata([(255, 255, 255, 0) for _ in image.getdata()])
 
     draw = ImageDraw.Draw(im=image)
     draw.text(xy=(width / 2, height / 2), text=symbol, font=font, fill=font_color, anchor="mm")
@@ -68,3 +70,7 @@ def spinner(font_size=16, color=(0, 0, 0)):
 
 def configs(font_size=16, color=(0, 0, 0)):
     return get_icon(CONFIGS_SYM, font_size, color)
+
+
+def open_folder(font_size=16, color=(0, 0, 0)):
+    return get_icon(FOLDER_OPEN_SYM, font_size, color)
