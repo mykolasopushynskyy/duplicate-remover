@@ -15,9 +15,9 @@ class StatusPanel(tk.CTkFrame):
                                       height=18)
         self.name_label.pack(side=LEFT, padx=10)
 
-    def set_message(self, data):
-        if data.text is None or len(data.text) == 0:
-            self.name_label.configure(text=DEFAULT_STATUS_TEXT, text_color=data.text_color)
+    def set_message(self, message):
+        if message is None or len(message) == 0:
+            self.name_label.configure(text=DEFAULT_STATUS_TEXT)
         else:
-            self.name_label.configure(text=data.text, text_color=data.text_color)
+            self.name_label.configure(text=message)
 

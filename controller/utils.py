@@ -1,7 +1,11 @@
 import functools
+import hashlib
 import os
 import threading
 from datetime import datetime
+
+# Define a tuple with common image file extensions
+IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".heic")
 
 
 def get_folder_size(path):
@@ -62,3 +66,37 @@ def threaded(func):
         return thread
 
     return wrapper
+
+
+def chunk_reader(file, chunk_size=1024):
+    """Generator that reads a file in chunks of bytes"""
+    while True:
+        chunk = file.read(chunk_size)
+        if not chunk:
+            return
+        yield chunk
+
+
+def get_hash(filename, first_chunk_only=False, hash_alg=hashlib.sha1):
+    hasher = hash_alg()
+    file_object = open(filename, 'rb')
+
+    if first_chunk_only:
+        hasher.update(file_object.read(1024))
+    else:
+        for chunk in chunk_reader(file_object):
+            hasher.update(chunk)
+
+    file_object.close()
+    return hasher.digest()
+
+
+def is_image_file(filename):
+    """
+    Check if a file is an image based on its extension.
+    Args:
+        filename (str): The name of the file to check.
+    Returns:
+        bool: True if the file is an image, False otherwise.
+    """
+    return filename.lower().endswith(IMAGE_EXTENSIONS)

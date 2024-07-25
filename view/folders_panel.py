@@ -1,6 +1,7 @@
 import customtkinter as tk
 from tkinter import LEFT, X, W, BOTH, RIGHT
 
+from model import TOOLBAR_WINDOW_BUTTON_SIZE, TOOLBAR_WINDOW_BUTTON_RADIUS, TOOLBAR_WINDOW_BUTTON_CLOSE_COLOR
 from view import icons, ARROW, TOOLBAR_HOVER_COLOR, TOOLBAR_FG_COLOR, TOOLBAR_BUTTON_WIDTH, TOOLBAR_BUTTON_HEIGHT, \
     TOOLBAR_ICON_COLOR
 
@@ -30,14 +31,15 @@ class FolderEntry(tk.CTkFrame):
         self.date_label.pack(anchor=W, pady=2)
 
         self.remove_button = tk.CTkButton(self.frame,
-                                          image=icons.minus(font_size=14, color=TOOLBAR_ICON_COLOR),
                                           text="",
                                           compound="top",
-                                          height=15,
-                                          width=15,
-                                          fg_color=TOOLBAR_FG_COLOR,
-                                          hover_color=TOOLBAR_HOVER_COLOR,
+                                          height=TOOLBAR_WINDOW_BUTTON_SIZE,
+                                          width=TOOLBAR_WINDOW_BUTTON_SIZE,
+                                          fg_color=TOOLBAR_HOVER_COLOR,
+                                          bg_color=TOOLBAR_FG_COLOR,
+                                          hover_color=TOOLBAR_WINDOW_BUTTON_CLOSE_COLOR,
                                           cursor=ARROW,
+                                          corner_radius=TOOLBAR_WINDOW_BUTTON_RADIUS,
                                           command=lambda: remove_item_callback(self.path)
                                           )
         self.remove_button.place(relx=1.0, y=0, anchor="ne")

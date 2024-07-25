@@ -1,5 +1,6 @@
 from controller.controller import ApplicationController
 from configs import ConfigManager
+from controller.duplicate_scanner import DuplicateScanner
 from view.view import ApplicationView
 from model.model import ApplicationModel
 
@@ -11,7 +12,8 @@ class App:
         self.config = ConfigManager("Duplicate Remover")
         self.model = ApplicationModel()
         self.view = ApplicationView()
-        self.controller = ApplicationController(self.config, self.model, self.view)
+        self.service = DuplicateScanner(self.model)
+        self.controller = ApplicationController(self.config, self.model, self.view, self.service)
 
     def start(self):
         self.view.mainloop()

@@ -3,6 +3,7 @@ import customtkinter as tk
 from tkinter import ttk, LEFT, BOTH, RIGHT, Y, VERTICAL, X, W, TOP, NORMAL, HORIZONTAL
 
 from view.folders_panel import FoldersPanel
+from view.result_panel import ResultsPanel
 from view.toolbar_panel import ToolbarPanel
 from view.status_panel import StatusPanel
 
@@ -32,8 +33,8 @@ class RootPanel(tk.CTkFrame):
         self.top_separator.pack(side=LEFT, fill=Y, expand=False, pady=0)
 
         # left main panel
-        self.right_panel = tk.CTkScrollableFrame(self.middle, bg_color="grey90", fg_color="grey90")
-        self.right_panel.pack(side=LEFT, fill=BOTH, expand=True)
+        self.results_panel = ResultsPanel(self.middle, bg_color="grey90", fg_color="grey90")
+        self.results_panel.pack(side=LEFT, fill=BOTH, expand=True)
 
         self.bottom_separator = ttk.Separator(self, orient=HORIZONTAL)
         self.bottom_separator.pack(side=TOP, fill=X, expand=False, pady=0)
