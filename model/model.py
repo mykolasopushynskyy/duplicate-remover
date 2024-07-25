@@ -50,8 +50,8 @@ class ApplicationModel(BaseModel):
         self.trigger_event(FOLDERS_TO_SCAN_CHANGED, self.folders_to_scan)
         self.trigger_event(CONFIGS_CHANGE, self.to_configs())
 
-    def remove_folder_to_scan(self, record: dict):
-        self.folders_to_scan.pop(record.get("path"))
+    def remove_folder_to_scan(self, path):
+        self.folders_to_scan.pop(path)
         self.trigger_event(FOLDERS_TO_SCAN_CHANGED, self.folders_to_scan)
         self.trigger_event(CONFIGS_CHANGE, self.to_configs())
 

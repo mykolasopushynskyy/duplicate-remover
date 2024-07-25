@@ -35,8 +35,8 @@ def get_icon(symbol: str, font_size: int, font_color: tuple):
     if type(font_color) is not tuple and len(font_color) != 3:
         raise TypeError("font_color must be a tuple of size 3")
 
-    width = font_size + 5
-    height = font_size + 5
+    width = font_size + 1
+    height = font_size + 1
 
     font = ImageFont.truetype(font=ICONS_FONT_FILE_PATH, size=font_size)
     image = Image.new(mode="RGBA", size=(width, height), color=(255, 255, 255, 0))

@@ -2,7 +2,7 @@ import customtkinter as tk
 from tkinter import LEFT, RIGHT
 
 from view import icons, TOOLBAR_ICON_COLOR, TOOLBAR_BUTTON_HEIGHT, TOOLBAR_BUTTON_WIDTH, TOOLBAR_FG_COLOR, \
-    TOOLBAR_HOVER_COLOR, TOOLBAR_HEADER_COLOR
+    TOOLBAR_HOVER_COLOR, TOOLBAR_HEADER_COLOR, ARROW
 
 
 class SelectFolderButton(tk.CTkFrame):
@@ -63,7 +63,7 @@ class SelectFolderButton(tk.CTkFrame):
         if "text" in kwargs:
             self.select_folder_label.configure(text=kwargs.pop("text"))
 
-        super().configure(self, **kwargs)
+        super().configure(**kwargs)
 
 
 class ToolbarPanel(tk.CTkFrame):
@@ -84,20 +84,10 @@ class ToolbarPanel(tk.CTkFrame):
                                        height=TOOLBAR_BUTTON_HEIGHT,
                                        width=TOOLBAR_BUTTON_WIDTH,
                                        fg_color=TOOLBAR_FG_COLOR,
-                                       hover_color=TOOLBAR_HOVER_COLOR
+                                       hover_color=TOOLBAR_HOVER_COLOR,
+                                       cursor=ARROW
                                        )
         self.add_button.pack(side=LEFT, padx=5, pady=5)
-
-        self.remove_button = tk.CTkButton(self,
-                                          image=icons.minus(color=TOOLBAR_ICON_COLOR),
-                                          text="",
-                                          compound="top",
-                                          height=TOOLBAR_BUTTON_HEIGHT,
-                                          width=TOOLBAR_BUTTON_WIDTH,
-                                          fg_color=TOOLBAR_FG_COLOR,
-                                          hover_color=TOOLBAR_HOVER_COLOR
-                                          )
-        self.remove_button.pack(side=LEFT, padx=5, pady=5)
 
         self.config_button = tk.CTkButton(self,
                                           image=icons.configs(color=TOOLBAR_ICON_COLOR),
@@ -106,7 +96,8 @@ class ToolbarPanel(tk.CTkFrame):
                                           height=TOOLBAR_BUTTON_HEIGHT,
                                           width=TOOLBAR_BUTTON_WIDTH,
                                           fg_color=TOOLBAR_FG_COLOR,
-                                          hover_color=TOOLBAR_HOVER_COLOR
+                                          hover_color=TOOLBAR_HOVER_COLOR,
+                                          cursor=ARROW
                                           )
         self.config_button.pack(side=RIGHT, padx=5, pady=5)
 
@@ -117,16 +108,17 @@ class ToolbarPanel(tk.CTkFrame):
                                                        height=TOOLBAR_BUTTON_HEIGHT)
         self.select_folder_button.pack(side=RIGHT, padx=5, pady=5)
 
-        self.run_button = tk.CTkButton(self,
-                                       image=icons.run(color=TOOLBAR_ICON_COLOR),
-                                       text="",
-                                       compound="top",
-                                       height=TOOLBAR_BUTTON_HEIGHT,
-                                       width=TOOLBAR_BUTTON_WIDTH,
-                                       fg_color=TOOLBAR_FG_COLOR,
-                                       hover_color=TOOLBAR_HOVER_COLOR
-                                       )
-        self.run_button.pack(side=RIGHT, padx=5, pady=5)
+        self.scan_button = tk.CTkButton(self,
+                                        image=icons.run(color=TOOLBAR_ICON_COLOR),
+                                        text="",
+                                        compound="top",
+                                        height=TOOLBAR_BUTTON_HEIGHT,
+                                        width=TOOLBAR_BUTTON_WIDTH,
+                                        fg_color=TOOLBAR_FG_COLOR,
+                                        hover_color=TOOLBAR_HOVER_COLOR,
+                                        cursor=ARROW
+                                        )
+        self.scan_button.pack(side=RIGHT, padx=5, pady=5)
 
     def set_destination_directory(self, text: str):
         self.select_folder_button.configure(text=text)

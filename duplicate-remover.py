@@ -1,4 +1,5 @@
 import os
+from parallel import threaded
 
 from configs import ConfigManager
 from datetime import datetime
@@ -23,6 +24,7 @@ class App:
         # commands bindings
         toolbar.add_button.configure(command=self.browse_directory_to_scan)
         toolbar.select_folder_button.configure(command=self.browse_destination_directory)
+        folders.configure(remove_item_callback=self.remove_directory)
 
         # event bindings
         self.model.add_event_listener(STATUS_MESSAGE_CHANGED, status.set_message)
@@ -31,12 +33,18 @@ class App:
         self.model.add_event_listener(CONFIGS_CHANGE, self.config.update_configs)
 
         # restore state
-        self.model.update_model(config_manager=self.config)
+        self.update_model()
 
     def start(self):
         self.view.mainloop()
 
-    def browse_directory_to_scan(self):
+    @threaded
+    def update_model(self):
+        # restore state
+        self.model.update_model(config_manager=self.config)
+
+    @threaded
+    def browse_directory_to_scan(self, *args):
         home = os.path.expanduser("~")
         directory = filedialog.askdirectory(initialdir=home, parent=self.view)
 
@@ -46,16 +54,19 @@ class App:
             directory_record = dict(path=directory,
                                     size=size,
                                     date=date)
+            # TODO make sure we dont add subfolders of folder to scan
             self.model.add_folder_to_scan(directory_record)
 
+    @threaded
     def browse_destination_directory(self, *args):
         home = os.path.expanduser("~")
         directory = filedialog.askdirectory(initialdir=home, parent=self.view)
         if directory is not None and os.path.isdir(directory):
             self.model.set_merge_folder(directory)
 
-    def remove_directory(self, *args):
-        pass
+    @threaded
+    def remove_directory(self, path):
+        self.model.remove_folder_to_scan(path)
 
     def get_folder_size(self, path):
         total_size = 0
