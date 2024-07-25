@@ -19,7 +19,7 @@ class SelectFolderButton(tk.CTkFrame):
                                               width=TOOLBAR_BUTTON_WIDTH,
                                               fg_color=TOOLBAR_FG_COLOR,
                                               )
-        self.select_folder_icon.pack(side=LEFT, padx=5)
+        self.select_folder_icon.pack(side=LEFT, padx=(5, 0))
 
         self.select_folder_label = tk.CTkLabel(self,
                                                text=text,
@@ -30,7 +30,7 @@ class SelectFolderButton(tk.CTkFrame):
                                                fg_color="white",
                                                bg_color=TOOLBAR_FG_COLOR,
                                                )
-        self.select_folder_label.pack(side=LEFT, padx=5, expand=True)
+        self.select_folder_label.pack(side=LEFT, padx=(0, 5), expand=True)
 
         self.bind("<Button-1>", self.command)
         self.bind("<Enter>", self.on_enter)
@@ -75,7 +75,7 @@ class ToolbarPanel(tk.CTkFrame):
                                       font=("San Francisco", 18),
                                       height=20,
                                       text_color=TOOLBAR_HEADER_COLOR)
-        self.name_label.pack(side=LEFT, pady=2, padx=5)
+        self.name_label.pack(side=LEFT, pady=2, padx=(10, 5))
 
         self.add_button = tk.CTkButton(self,
                                        image=icons.plus(color=TOOLBAR_ICON_COLOR),
@@ -87,7 +87,7 @@ class ToolbarPanel(tk.CTkFrame):
                                        hover_color=TOOLBAR_HOVER_COLOR,
                                        cursor=ARROW
                                        )
-        self.add_button.pack(side=LEFT, padx=5, pady=5)
+        self.add_button.pack(side=LEFT, padx=(0, 5), pady=5)
 
         self.config_button = tk.CTkButton(self,
                                           image=icons.configs(color=TOOLBAR_ICON_COLOR),
@@ -99,14 +99,14 @@ class ToolbarPanel(tk.CTkFrame):
                                           hover_color=TOOLBAR_HOVER_COLOR,
                                           cursor=ARROW
                                           )
-        self.config_button.pack(side=RIGHT, padx=5, pady=5)
+        self.config_button.pack(side=RIGHT, padx=(0, 5), pady=5)
 
         # pick folder frame
         self.select_folder_button = SelectFolderButton(self,
                                                        text="Destination folder...",
                                                        fg_color=TOOLBAR_FG_COLOR,
                                                        height=TOOLBAR_BUTTON_HEIGHT)
-        self.select_folder_button.pack(side=RIGHT, padx=5, pady=5)
+        self.select_folder_button.pack(side=RIGHT, padx=(0, 5), pady=5)
 
         self.scan_button = tk.CTkButton(self,
                                         image=icons.run(color=TOOLBAR_ICON_COLOR),
@@ -118,7 +118,7 @@ class ToolbarPanel(tk.CTkFrame):
                                         hover_color=TOOLBAR_HOVER_COLOR,
                                         cursor=ARROW
                                         )
-        self.scan_button.pack(side=RIGHT, padx=5, pady=5)
+        self.scan_button.pack(side=RIGHT, padx=(0, 5), pady=5)
 
     def set_destination_directory(self, text: str):
         self.select_folder_button.configure(text=text)
