@@ -1,8 +1,9 @@
 import os
+
+from controller.utils import get_folder_size, friendly_date
 from parallel import threaded
 
 from configs import ConfigManager
-from datetime import datetime
 from customtkinter import filedialog
 from view.view import ApplicationView
 from model.model import ApplicationModel, STATUS_MESSAGE_CHANGED, MERGE_FOLDER_CHANGE, CONFIGS_CHANGE, \
@@ -46,8 +47,8 @@ class ApplicationController:
         directory = filedialog.askdirectory(initialdir=home, parent=self.view)
 
         if os.path.isdir(directory):
-            size = self.get_folder_size(directory)
-            date = self.date_format(os.stat(directory).st_ctime)
+            size = get_folder_size(directory)
+            date = friendly_date(os.stat(directory).st_ctime)
             directory_record = dict(path=directory,
                                     size=size,
                                     date=date)
@@ -64,25 +65,3 @@ class ApplicationController:
     @threaded
     def remove_directory(self, path):
         self.model.remove_folder_to_scan(path)
-
-    def get_folder_size(self, path):
-        total_size = 0
-        try:
-            for dirpath, dirnames, filenames in os.walk(path):
-                for f in filenames:
-                    fp = os.path.join(dirpath, f)
-                    total_size += os.path.getsize(fp)
-            return self.convert_size(total_size)
-        except FileNotFoundError as e:
-            return "unknown"
-
-    @staticmethod
-    def convert_size(size):
-        for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
-            if size < 1024:
-                return f"{size:.2f} {unit}"
-            size /= 1024
-
-    @staticmethod
-    def date_format(timestamp):
-        return datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")

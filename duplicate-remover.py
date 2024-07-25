@@ -1,5 +1,4 @@
 from controller.controller import ApplicationController
-
 from configs import ConfigManager
 from view.view import ApplicationView
 from model.model import ApplicationModel
