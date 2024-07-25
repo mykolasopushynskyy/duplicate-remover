@@ -4,16 +4,15 @@ This module contains config manager class and various additional util methods.
 
 import json
 import os
-
 from appdirs import user_config_dir
 
 PROJECT_DIR = os.path.dirname(__file__)
-ICONS_FONT_FILE_PATH = os.path.abspath(os.path.join(PROJECT_DIR, 'resources', 'icons.ttf'))
+ICONS_FONT_FILE_PATH = os.path.abspath(os.path.join(PROJECT_DIR, 'assets', 'icons.ttf'))
 CONFIG_FILE_LOCATION_NAME = 'config.json'
 
 
 class ConfigManager:
-    def __init__(self, app_name, config_file=CONFIG_FILE_LOCATION_NAME):
+    def __init__(self, app_name: str, config_file: str = CONFIG_FILE_LOCATION_NAME):
         self.app_name = app_name
         self.config_dir = user_config_dir(app_name)
         os.makedirs(self.config_dir, exist_ok=True)
@@ -32,8 +31,13 @@ class ConfigManager:
             json.dump(self.config, f, indent=4)
 
     def get(self, key, default=None):
-        return self.config.get(key, default)
+        val = self.config.get(key)
+        return default if val is None else val
 
     def set(self, key, value):
         self.config[key] = value
+        self.save_config()
+
+    def update_configs(self, model: dict):
+        self.config = model
         self.save_config()
