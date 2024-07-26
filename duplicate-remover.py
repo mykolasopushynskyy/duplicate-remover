@@ -11,11 +11,11 @@ class App:
         super().__init__()
 
         self.pubsub = PubSubBroker()
-        self.config = ConfigManager(self.pubsub)
         self.model = ApplicationModel(self.pubsub)
         self.view = ApplicationView(self.pubsub)
-        self.service = DuplicateScanner(self.model)
-        self.controller = ApplicationController(self.pubsub, self.config, self.model, self.view, self.service)
+        self.service = DuplicateScanner(self.model, self.pubsub)
+        self.controller = ApplicationController(self.pubsub, self.model, self.view, self.service)
+        self.config = ConfigManager(self.pubsub)
 
     def start(self):
         self.view.mainloop()

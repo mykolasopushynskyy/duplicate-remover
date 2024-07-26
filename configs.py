@@ -16,14 +16,23 @@ CONFIG_FILE_LOCATION_NAME = "config.json"
 
 
 class ConfigManager:
-    def __init__(self: str, pubsub: PubSubBroker, config_file: str = CONFIG_FILE_LOCATION_NAME):
+    def __init__(self, pubsub: PubSubBroker, config_file: str = CONFIG_FILE_LOCATION_NAME):
         self.config_dir = user_config_dir(APP_NAME)
         os.makedirs(self.config_dir, exist_ok=True)
         self.config_file = os.path.join(self.config_dir, config_file)
         self.config = self.load_config()
-
         self.pubsub = pubsub
+
+        # subscribe for config change
         self.pubsub.subscribe(Topic.CONFIGS_CHANGE, self.update_configs)
+
+        # publish data from settings
+        self.pubsub.publish(Topic.MODEL_LOAD, dict(
+            merge_folder=self.get("merge_folder", default=""),
+            folders_to_scan=self.get("folders_to_scan", default={})
+        ))
+        self.pubsub.publish(Topic.MERGE_FOLDER_CHANGED, self.get("merge_folder", default=""))
+        self.pubsub.publish(Topic.FOLDERS_TO_SCAN_CHANGED, self.get("folders_to_scan", default={}))
 
     def load_config(self):
         if os.path.exists(self.config_file):
@@ -44,6 +53,6 @@ class ConfigManager:
         self.config[key] = value
         self.save_config()
 
-    def update_configs(self, model: dict):
-        self.config = model
+    def update_configs(self, model):
+        self.config = model.to_configs()
         self.save_config()

@@ -6,6 +6,12 @@ from datetime import datetime
 
 # Define a tuple with common image file extensions
 IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".heic")
+HOME = os.path.expanduser("~")
+
+
+def short_path(abs_path: str):
+    if abs_path.startswith(HOME):
+        return abs_path.replace(HOME, "~", 1)
 
 
 def get_folder_size(path):
@@ -77,12 +83,17 @@ def chunk_reader(file, chunk_size=1024):
         yield chunk
 
 
-def get_hash(filename, first_chunk_only=False, hash_alg=hashlib.sha1):
+def get_hash(filename, quick_hash=False, chunk_size=1024, hash_alg=hashlib.sha1):
     hasher = hash_alg()
     file_object = open(filename, 'rb')
 
-    if first_chunk_only:
-        hasher.update(file_object.read(1024))
+    if quick_hash:
+        start_chunk = file_object.read(chunk_size)
+        hasher.update(start_chunk)
+
+        file_object.seek(-chunk_size, os.SEEK_END)
+        end_chunk = file_object.read(chunk_size)
+        hasher.update(end_chunk)
     else:
         for chunk in chunk_reader(file_object):
             hasher.update(chunk)

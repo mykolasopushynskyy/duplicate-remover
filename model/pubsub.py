@@ -2,6 +2,8 @@ from enum import Enum
 
 
 class Topic(Enum):
+    SCANNING = "scan_started"
+    MODEL_LOAD = "model_load"
     REMOVE_FOLDER_PRESSED = "remove_folder_pressed"
     ADD_FOLDER_PRESSED = "add_folder_pressed"
     SELECT_FOLDER_PRESSED = "select_folder_pressed"
