@@ -81,10 +81,10 @@ class FoldersPanel(tk.CTkFrame):
         self.folder_22 = icons.folder(40)
 
         self.topLabel = tk.CTkLabel(self,
-                                    font=("San Francisco", 10),
+                                    font=("San Francisco", 12),
                                     text="Folders to scan",
                                     height=14,
-                                    text_color="grey",
+                                    text_color="black",
                                     width=350,
                                     anchor=W)
         self.topLabel.pack(side=TOP, fill=X, expand=False, padx=10)

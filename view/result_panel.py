@@ -5,8 +5,11 @@ from tkinter import LEFT, X, W, BOTH, RIGHT, TOP, END, Y, DISABLED, NORMAL, NONE
 
 from model.pubsub import PubSubBroker, Topic
 
+ODD_TAG = "odd"
+EVEN_TAG = "even"
+
 # This is the list of all default command in the "Text" tag that modify the text
-commandsToRemove = (
+COMMANDS_TO_REMOVE = (
     "<Control-Key-h>",
     "<Meta-Key-Delete>",
     "<Meta-Key-BackSpace>",
@@ -51,7 +54,7 @@ class ReadOnlyText(tk.CTkTextbox):
         If the command is allowed, recopy it in the ROText binding table.
         """
         for key in self._textbox.bind_class("Text"):
-            if key not in commandsToRemove:
+            if key not in COMMANDS_TO_REMOVE:
                 command = self._textbox.bind_class("Text", key)
                 self._textbox.bind_class("ReadOnlyText", key, command)
         ReadOnlyText.is_tag_initialized = True
@@ -67,10 +70,10 @@ class ResultsPanel(tk.CTkFrame):
         self.pubsub.subscribe(Topic.RESULTS_ARRIVED, self.show_final_result)
 
         self.topLabel = tk.CTkLabel(self,
-                                    font=("San Francisco", 10),
+                                    font=("San Francisco", 12),
                                     text="Scan results",
                                     height=14,
-                                    text_color="grey",
+                                    text_color="black",
                                     anchor=W)
         self.topLabel.pack(side=TOP, fill=X, expand=False, padx=10)
 
@@ -87,18 +90,20 @@ class ResultsPanel(tk.CTkFrame):
                                        )
         self.label_text.pack(side=TOP, fill=BOTH, expand=True)
 
+        self.label_text.tag_config(EVEN_TAG, background="#e0e0e0")
+        self.label_text.tag_lower(EVEN_TAG)
+        self.label_text.tag_config(ODD_TAG, background="#ffffff")
+        self.label_text.tag_lower(ODD_TAG)
+
     def show_final_result(self, duplicates):
         if len(duplicates) == 0:
             return
 
-        text = "┌───┬──────────────────────────────────────────────────────────────\n"
+        tag = ODD_TAG
         for i, entries in enumerate(duplicates):
-            text += "\n".join([f"│{i + 1:<3}│ {value}" for i, value in enumerate(entries)])
-            if i < len(duplicates) - 1:
-                text += "\n├───┼──────────────────────────────────────────────────────────────\n"
-        text += "\n└───┴──────────────────────────────────────────────────────────────\n"
-
-        self.label_text.insert(1.0, text)
+            text = "\n".join([f"{value}" for i, value in enumerate(entries)]) + "\n"
+            self.label_text.insert(END, text, tag)
+            tag = EVEN_TAG if tag == ODD_TAG else ODD_TAG
 
     def scanning_change(self, is_scanning):
         if is_scanning:

@@ -12,6 +12,8 @@ HOME = os.path.expanduser("~")
 def short_path(abs_path: str):
     if abs_path.startswith(HOME):
         return abs_path.replace(HOME, "~", 1)
+    else:
+        return abs_path
 
 
 def get_folder_size(path):
