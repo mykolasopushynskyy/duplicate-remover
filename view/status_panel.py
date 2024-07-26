@@ -1,7 +1,8 @@
 import customtkinter as tk
 from tkinter import LEFT
 
-from model.pubsub import PubSubBroker, Topic
+from model import events
+from model.pubsub import PubSubBroker
 
 DEFAULT_STATUS_TEXT = "···"
 
@@ -12,13 +13,12 @@ class StatusPanel(tk.CTkFrame):
 
         # subscribe to events
         self.pubsub = pubsub
-        self.pubsub.subscribe(Topic.STATUS_MESSAGE_SET, self.set_message)
+        self.pubsub.subscribe(events.STATUS_MESSAGE_SET, self.set_message)
 
         # status panel elements
-        self.name_label = tk.CTkLabel(self,
-                                      text=DEFAULT_STATUS_TEXT,
-                                      font=("San Francisco", 18),
-                                      height=18)
+        self.name_label = tk.CTkLabel(
+            self, text=DEFAULT_STATUS_TEXT, font=("San Francisco", 18), height=18
+        )
         self.name_label.pack(side=LEFT, padx=10)
 
     def set_message(self, message):
@@ -26,4 +26,3 @@ class StatusPanel(tk.CTkFrame):
             self.name_label.configure(text=DEFAULT_STATUS_TEXT)
         else:
             self.name_label.configure(text=message)
-

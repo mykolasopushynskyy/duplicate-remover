@@ -1,5 +1,5 @@
 import customtkinter as tk
-from tkinter import LEFT, BOTH, X, W
+from tkinter import BOTH
 
 from model.model import PubSubBroker
 from view.root_panel import RootPanel

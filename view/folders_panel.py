@@ -2,14 +2,29 @@ import customtkinter as tk
 from tkinter import LEFT, X, W, BOTH, TOP, ttk, HORIZONTAL
 
 from util.utils import short_path
-from model import TOOLBAR_WINDOW_BUTTON_SIZE, TOOLBAR_WINDOW_BUTTON_RADIUS, TOOLBAR_WINDOW_BUTTON_CLOSE_COLOR
-from model.pubsub import Topic, PubSubBroker
+from model import (
+    TOOLBAR_WINDOW_BUTTON_SIZE,
+    TOOLBAR_WINDOW_BUTTON_RADIUS,
+    TOOLBAR_WINDOW_BUTTON_CLOSE_COLOR,
+    events,
+)
+from model.pubsub import PubSubBroker
 from view import ARROW, TOOLBAR_HOVER_COLOR, TOOLBAR_FG_COLOR
 from util import icons
 
 
 class FolderEntry(tk.CTkFrame):
-    def __init__(self, master, path, size, date, image, remove_item_callback: callable, bg_color=None, **kwargs):
+    def __init__(
+        self,
+        master,
+        path,
+        size,
+        date,
+        image,
+        remove_item_callback: callable,
+        bg_color=None,
+        **kwargs,
+    ):
         super().__init__(master, **kwargs)
 
         self.path = path
@@ -17,33 +32,53 @@ class FolderEntry(tk.CTkFrame):
         self.icon_label = tk.CTkLabel(self, text="", image=image)
         self.icon_label.pack(side=LEFT, padx=5)
 
-        self.path_label = tk.CTkLabel(self, text=short_path(path), font=("San Francisco", 12), height=16, bg_color=bg_color)
+        self.path_label = tk.CTkLabel(
+            self,
+            text=short_path(path),
+            font=("San Francisco", 12),
+            height=16,
+            bg_color=bg_color,
+        )
         self.path_label.pack(anchor=W, pady=2)
 
-        self.size_label = tk.CTkLabel(self, text=f"Size: {size}", font=("San Francisco", 10), height=14,
-                                      text_color="grey",
-                                      bg_color=bg_color)
+        self.size_label = tk.CTkLabel(
+            self,
+            text=f"Size: {size}",
+            font=("San Francisco", 10),
+            height=14,
+            text_color="grey",
+            bg_color=bg_color,
+        )
         self.size_label.pack(anchor=W, pady=2)
 
-        self.date_label = tk.CTkLabel(self, text=f"Date: {date}", font=("San Francisco", 10), height=14,
-                                      text_color="dodger blue", bg_color=bg_color)
+        self.date_label = tk.CTkLabel(
+            self,
+            text=f"Date: {date}",
+            font=("San Francisco", 10),
+            height=14,
+            text_color="dodger blue",
+            bg_color=bg_color,
+        )
         self.date_label.pack(anchor=W, pady=2)
 
-        self.remove_button = tk.CTkButton(self,
-                                          text="",
-                                          compound="top",
-                                          height=TOOLBAR_WINDOW_BUTTON_SIZE,
-                                          width=TOOLBAR_WINDOW_BUTTON_SIZE,
-                                          fg_color=TOOLBAR_HOVER_COLOR,
-                                          bg_color=TOOLBAR_FG_COLOR,
-                                          hover_color=TOOLBAR_WINDOW_BUTTON_CLOSE_COLOR,
-                                          cursor=ARROW,
-                                          corner_radius=TOOLBAR_WINDOW_BUTTON_RADIUS,
-                                          command=lambda: remove_item_callback(self.path)
-                                          )
+        self.remove_button = tk.CTkButton(
+            self,
+            text="",
+            compound="top",
+            height=TOOLBAR_WINDOW_BUTTON_SIZE,
+            width=TOOLBAR_WINDOW_BUTTON_SIZE,
+            fg_color=TOOLBAR_HOVER_COLOR,
+            bg_color=TOOLBAR_FG_COLOR,
+            hover_color=TOOLBAR_WINDOW_BUTTON_CLOSE_COLOR,
+            cursor=ARROW,
+            corner_radius=TOOLBAR_WINDOW_BUTTON_RADIUS,
+            command=lambda: remove_item_callback(self.path),
+        )
         self.remove_button.place(x=-4, relx=1.0, y=4, anchor="ne")
 
-        self.bind_common(self, self.icon_label, self.path_label, self.size_label, self.date_label)
+        self.bind_common(
+            self, self.icon_label, self.path_label, self.size_label, self.date_label
+        )
 
     def bind_common(self, *args):
         for e in args:
@@ -72,7 +107,7 @@ class FoldersPanel(tk.CTkFrame):
 
         # subscribe to events
         self.pubsub = pubsub
-        self.pubsub.subscribe(Topic.FOLDERS_TO_SCAN_CHANGED, self.update_folders)
+        self.pubsub.subscribe(events.FOLDERS_TO_SCAN_CHANGED, self.update_folders)
 
         # elements
         self.elements = []
@@ -80,13 +115,15 @@ class FoldersPanel(tk.CTkFrame):
         # icon images
         self.folder_22 = icons.folder(40)
 
-        self.topLabel = tk.CTkLabel(self,
-                                    font=("San Francisco", 12),
-                                    text="Folders to scan",
-                                    height=14,
-                                    text_color="black",
-                                    width=350,
-                                    anchor=W)
+        self.topLabel = tk.CTkLabel(
+            self,
+            font=("San Francisco", 12),
+            text="Folders to scan",
+            height=14,
+            text_color="black",
+            width=350,
+            anchor=W,
+        )
         self.topLabel.pack(side=TOP, fill=X, expand=False, padx=10)
 
         # separator
@@ -112,7 +149,7 @@ class FoldersPanel(tk.CTkFrame):
                 self.add_folder_entry(path, size, date)
 
         if len(self.elements) > len(folders):
-            elements_to_remove = self.elements[len(folders):len(self.elements)]
+            elements_to_remove = self.elements[len(folders) : len(self.elements)]
 
             for element in elements_to_remove:
                 element.destroy()
@@ -123,11 +160,19 @@ class FoldersPanel(tk.CTkFrame):
         idx = len(self.elements)
         color = "grey90" if idx % 2 == 0 else "grey85"
 
-        def remove_folder_entry(abs_path): self.pubsub.publish(Topic.REMOVE_FOLDER_PRESSED, abs_path)
-        entry = FolderEntry(self.folders, path, size, date, self.folder_22, remove_folder_entry,
-                            fg_color=color,
-                            bg_color=color)
+        def remove_folder_entry(abs_path):
+            self.pubsub.publish(events.REMOVE_FOLDER_PRESSED, abs_path)
+
+        entry = FolderEntry(
+            self.folders,
+            path,
+            size,
+            date,
+            self.folder_22,
+            remove_folder_entry,
+            fg_color=color,
+            bg_color=color,
+        )
         entry.pack(fill=X, expand=False)
 
         self.elements.append(entry)
-

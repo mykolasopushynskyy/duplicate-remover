@@ -26,9 +26,9 @@ def get_folder_size(path):
     """
     total_size = 0
     try:
-        for dirpath, dirnames, filenames in os.walk(path):
+        for dir_path, dir_names, filenames in os.walk(path):
             for f in filenames:
-                fp = os.path.join(dirpath, f)
+                fp = os.path.join(dir_path, f)
                 total_size += os.path.getsize(fp)
     except FileNotFoundError as e:
         return "unknown"
@@ -45,7 +45,7 @@ def convert_size(size):
     Returns:
         str: The size in a human-readable format.
     """
-    for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
+    for unit in ["B", "KB", "MB", "GB", "TB"]:
         if size < 1024:
             return f"{size:.2f} {unit}"
         size /= 1024
@@ -87,7 +87,7 @@ def chunk_reader(file, chunk_size=1024):
 
 def get_hash(filename, quick_hash=False, chunk_size=1024, hash_alg=hashlib.sha1):
     hasher = hash_alg()
-    file_object = open(filename, 'rb')
+    file_object = open(filename, "rb")
 
     if quick_hash:
         start_chunk = file_object.read(chunk_size)

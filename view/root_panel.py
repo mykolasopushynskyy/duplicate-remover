@@ -1,6 +1,16 @@
 import customtkinter as tk
 
-from tkinter import ttk, LEFT, BOTH, RIGHT, Y, VERTICAL, X, W, TOP, NORMAL, HORIZONTAL, BOTTOM
+from tkinter import (
+    ttk,
+    LEFT,
+    BOTH,
+    Y,
+    VERTICAL,
+    X,
+    TOP,
+    HORIZONTAL,
+    BOTTOM,
+)
 
 from model.pubsub import PubSubBroker
 from view.folders_panel import FoldersPanel
@@ -26,7 +36,9 @@ class RootPanel(tk.CTkFrame):
         self.middle.pack(side=TOP, fill=BOTH, expand=True)
 
         # left main panel
-        self.folders_to_scan = FoldersPanel(self.middle, pubsub, bg_color="grey90", fg_color="grey90")
+        self.folders_to_scan = FoldersPanel(
+            self.middle, pubsub, bg_color="grey90", fg_color="grey90"
+        )
         self.folders_to_scan.pack(side=LEFT, fill=Y, expand=False)
 
         # separator
@@ -34,7 +46,9 @@ class RootPanel(tk.CTkFrame):
         self.top_separator.pack(side=LEFT, fill=BOTH, expand=False)
 
         # right main panel
-        self.results_panel = ResultsPanel(self.middle, pubsub, bg_color="grey90", fg_color="grey90")
+        self.results_panel = ResultsPanel(
+            self.middle, pubsub, bg_color="grey90", fg_color="grey90"
+        )
         self.results_panel.pack(side=LEFT, fill=BOTH, expand=True)
 
         # status panel frame

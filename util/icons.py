@@ -42,7 +42,9 @@ def get_icon(symbol: str, font_size: int, font_color: tuple):
     image = Image.new(mode="RGBA", size=(width, height), color=(255, 255, 255, 0))
 
     draw = ImageDraw.Draw(im=image, mode="RGBA")
-    draw.text(xy=(width / 2, height / 2), text=symbol, font=font, fill=font_color, anchor="mm")
+    draw.text(
+        xy=(width / 2, height / 2), text=symbol, font=font, fill=font_color, anchor="mm"
+    )
 
     photo_image = CTkImage(light_image=image, dark_image=image, size=(width, height))
     return photo_image

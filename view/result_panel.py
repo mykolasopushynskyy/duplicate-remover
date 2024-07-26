@@ -1,9 +1,17 @@
-import tkinter
-
 import customtkinter as tk
-from tkinter import LEFT, X, W, BOTH, RIGHT, TOP, END, Y, DISABLED, NORMAL, NONE, ttk, HORIZONTAL
+from tkinter import (
+    X,
+    W,
+    BOTH,
+    TOP,
+    END,
+    NONE,
+    ttk,
+    HORIZONTAL,
+)
 
-from model.pubsub import PubSubBroker, Topic
+from model import events
+from model.pubsub import PubSubBroker
 
 ODD_TAG = "odd"
 EVEN_TAG = "even"
@@ -32,7 +40,7 @@ COMMANDS_TO_REMOVE = (
     "<Key-Return>",
     "<Control-Key-i>",
     "<Key-Tab>",
-    "<Shift-Key-Tab>"
+    "<Shift-Key-Tab>",
 )
 
 
@@ -45,7 +53,9 @@ class ReadOnlyText(tk.CTkTextbox):
             self.initialize_tag()
 
         # Create a new binding table list, replace the default Text binding table by the ResultReadOnlyText one
-        bindTags = tuple(tag if tag != "Text" else "ReadOnlyText" for tag in self._textbox.bindtags())
+        bindTags = tuple(
+            tag if tag != "Text" else "ReadOnlyText" for tag in self._textbox.bindtags()
+        )
         self._textbox.bindtags(bindTags)
 
     def initialize_tag(self):
@@ -66,28 +76,31 @@ class ResultsPanel(tk.CTkFrame):
 
         # subscribe to events
         self.pubsub = pubsub
-        self.pubsub.subscribe(Topic.SCANNING, self.scanning_change)
-        self.pubsub.subscribe(Topic.RESULTS_ARRIVED, self.show_final_result)
+        self.pubsub.subscribe(events.SCANNING, self.scanning_change)
+        self.pubsub.subscribe(events.RESULTS_ARRIVED, self.show_final_result)
 
-        self.topLabel = tk.CTkLabel(self,
-                                    font=("San Francisco", 12),
-                                    text="Scan results",
-                                    height=14,
-                                    text_color="black",
-                                    anchor=W)
+        self.topLabel = tk.CTkLabel(
+            self,
+            font=("San Francisco", 12),
+            text="Scan results",
+            height=14,
+            text_color="black",
+            anchor=W,
+        )
         self.topLabel.pack(side=TOP, fill=X, expand=False, padx=10)
 
         # separator
         self.top_separator = ttk.Separator(self, orient=HORIZONTAL)
         self.top_separator.pack(side=TOP, fill=X, expand=False)
 
-        self.label_text = ReadOnlyText(self,
-                                       font=("Courier New", 14),
-                                       text_color="black",
-                                       bg_color="grey85",
-                                       fg_color="grey85",
-                                       wrap=NONE
-                                       )
+        self.label_text = ReadOnlyText(
+            self,
+            font=("Courier New", 14),
+            text_color="black",
+            bg_color="grey85",
+            fg_color="grey85",
+            wrap=NONE,
+        )
         self.label_text.pack(side=TOP, fill=BOTH, expand=True)
 
         self.label_text.tag_config(EVEN_TAG, background="#e0e0e0")

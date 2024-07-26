@@ -6,7 +6,8 @@ import json
 import os
 from appdirs import user_config_dir
 
-from model.pubsub import PubSubBroker, Topic
+from model import events
+from model.pubsub import PubSubBroker
 
 APP_NAME = "Duplicate Remover"
 
@@ -16,7 +17,9 @@ CONFIG_FILE_LOCATION_NAME = "config.json"
 
 
 class ConfigManager:
-    def __init__(self, pubsub: PubSubBroker, config_file: str = CONFIG_FILE_LOCATION_NAME):
+    def __init__(
+        self, pubsub: PubSubBroker, config_file: str = CONFIG_FILE_LOCATION_NAME
+    ):
         self.config_dir = user_config_dir(APP_NAME)
         os.makedirs(self.config_dir, exist_ok=True)
         self.config_file = os.path.join(self.config_dir, config_file)
@@ -24,15 +27,7 @@ class ConfigManager:
         self.pubsub = pubsub
 
         # subscribe for config change
-        self.pubsub.subscribe(Topic.CONFIGS_CHANGE, self.update_configs)
-
-        # publish data from settings
-        self.pubsub.publish(Topic.MODEL_LOAD, dict(
-            merge_folder=self.get("merge_folder", default=""),
-            folders_to_scan=self.get("folders_to_scan", default={})
-        ))
-        self.pubsub.publish(Topic.MERGE_FOLDER_CHANGED, self.get("merge_folder", default=""))
-        self.pubsub.publish(Topic.FOLDERS_TO_SCAN_CHANGED, self.get("folders_to_scan", default={}))
+        self.pubsub.subscribe(events.CONFIGS_CHANGE, self.update_configs)
 
     def load_config(self):
         if os.path.exists(self.config_file):

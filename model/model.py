@@ -1,4 +1,5 @@
-from model.pubsub import PubSubBroker, Topic
+from model import events
+from model.pubsub import PubSubBroker
 
 
 class ApplicationModel:
@@ -11,7 +12,7 @@ class ApplicationModel:
         self.folders_to_scan = {}
 
         # subscribe for config change
-        self.pubsub.subscribe(Topic.MODEL_LOAD, self.from_configs)
+        self.pubsub.subscribe(events.MODEL_LOAD, self.from_configs)
 
     def from_configs(self, configs):
         self.merge_folder = configs["merge_folder"]
@@ -19,8 +20,7 @@ class ApplicationModel:
 
     def to_configs(self):
         return dict(
-            merge_folder=self.merge_folder,
-            folders_to_scan=self.folders_to_scan
+            merge_folder=self.merge_folder, folders_to_scan=self.folders_to_scan
         )
 
     def set_merge_folder(self, path):
