@@ -1,6 +1,6 @@
 import os
 
-from controller.utils import get_hash, is_image_file, convert_size
+from util.utils import get_hash, is_image_file, convert_size
 from model.model import ApplicationModel
 from model.pubsub import Topic, PubSubBroker
 from timeit import default_timer as timer

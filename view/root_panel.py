@@ -26,8 +26,8 @@ class RootPanel(tk.CTkFrame):
         self.middle.pack(side=TOP, fill=BOTH, expand=True)
 
         # left main panel
-        self.folders_to_scan = FoldersPanel(self.middle, pubsub, bg_color="grey90", fg_color="grey90", width=350)
-        self.folders_to_scan.pack(side=LEFT, fill=BOTH, expand=False)
+        self.folders_to_scan = FoldersPanel(self.middle, pubsub, bg_color="grey90", fg_color="grey90")
+        self.folders_to_scan.pack(side=LEFT, fill=Y, expand=False)
 
         # separator
         self.top_separator = ttk.Separator(self.middle, orient=VERTICAL)

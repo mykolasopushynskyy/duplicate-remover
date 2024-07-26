@@ -2,8 +2,9 @@ import customtkinter as tk
 from tkinter import LEFT, RIGHT
 
 from model.pubsub import PubSubBroker, Topic
-from view import icons, TOOLBAR_ICON_COLOR, TOOLBAR_BUTTON_HEIGHT, TOOLBAR_BUTTON_WIDTH, TOOLBAR_FG_COLOR, \
+from view import TOOLBAR_ICON_COLOR, TOOLBAR_BUTTON_HEIGHT, TOOLBAR_BUTTON_WIDTH, TOOLBAR_FG_COLOR, \
     TOOLBAR_HOVER_COLOR, TOOLBAR_HEADER_COLOR, ARROW
+from util import icons
 
 
 class SelectFolderButton(tk.CTkFrame):

@@ -1,7 +1,7 @@
 import os
 
 from controller.duplicate_scanner import DuplicateScanner
-from controller.utils import get_folder_size, friendly_date, threaded, short_path
+from util.utils import get_folder_size, friendly_date, threaded, short_path
 
 from customtkinter import filedialog
 from view.view import ApplicationView
@@ -29,7 +29,6 @@ class ApplicationController:
         self.pubsub.subscribe(Topic.SCAN_DUPLICATES_PRESSED, self.scan_for_duplicates)
         self.pubsub.subscribe(Topic.REMOVE_FOLDER_PRESSED, self.remove_directory_to_scan)
 
-    @threaded
     def browse_directory_to_scan(self, *args):
         home = os.path.expanduser("~")
         directory = filedialog.askdirectory(initialdir=home, parent=self.view)

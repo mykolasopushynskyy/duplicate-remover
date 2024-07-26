@@ -1,9 +1,11 @@
 import customtkinter as tk
-from tkinter import LEFT, X, W, BOTH, RIGHT
+from tkinter import LEFT, X, W, BOTH, TOP, ttk, HORIZONTAL
 
+from util.utils import short_path
 from model import TOOLBAR_WINDOW_BUTTON_SIZE, TOOLBAR_WINDOW_BUTTON_RADIUS, TOOLBAR_WINDOW_BUTTON_CLOSE_COLOR
 from model.pubsub import Topic, PubSubBroker
-from view import icons, ARROW, TOOLBAR_HOVER_COLOR, TOOLBAR_FG_COLOR
+from view import ARROW, TOOLBAR_HOVER_COLOR, TOOLBAR_FG_COLOR
+from util import icons
 
 
 class FolderEntry(tk.CTkFrame):
@@ -15,7 +17,7 @@ class FolderEntry(tk.CTkFrame):
         self.icon_label = tk.CTkLabel(self, text="", image=image)
         self.icon_label.pack(side=LEFT, padx=5)
 
-        self.path_label = tk.CTkLabel(self, text=path, font=("San Francisco", 12), height=16, bg_color=bg_color)
+        self.path_label = tk.CTkLabel(self, text=short_path(path), font=("San Francisco", 12), height=16, bg_color=bg_color)
         self.path_label.pack(anchor=W, pady=2)
 
         self.size_label = tk.CTkLabel(self, text=f"Size: {size}", font=("San Francisco", 10), height=14,
@@ -59,12 +61,12 @@ class FolderEntry(tk.CTkFrame):
 
         self.configure(fg_color=bg_color, bg_color=bg_color)
         self.icon_label.configure(image=image)
-        self.path_label.configure(text=self.path, bg_color=bg_color)
+        self.path_label.configure(text=short_path(path), bg_color=bg_color)
         self.size_label.configure(text=f"Size: {size}", bg_color=bg_color)
         self.date_label.configure(text=f"Date: {date}", bg_color=bg_color)
 
 
-class FoldersPanel(tk.CTkScrollableFrame):
+class FoldersPanel(tk.CTkFrame):
     def __init__(self, master: tk.CTkFrame, pubsub: PubSubBroker, **kwargs):
         super().__init__(master, **kwargs)
 
@@ -77,6 +79,23 @@ class FoldersPanel(tk.CTkScrollableFrame):
 
         # icon images
         self.folder_22 = icons.folder(40)
+
+        self.topLabel = tk.CTkLabel(self,
+                                    font=("San Francisco", 10),
+                                    text="Folders to scan",
+                                    height=14,
+                                    text_color="grey",
+                                    width=350,
+                                    anchor=W)
+        self.topLabel.pack(side=TOP, fill=X, expand=False, padx=10)
+
+        # separator
+        self.top_separator = ttk.Separator(self, orient=HORIZONTAL)
+        self.top_separator.pack(side=TOP, fill=X, expand=False)
+
+        # main area frame
+        self.folders = tk.CTkScrollableFrame(self, bg_color="grey90", fg_color="grey90")
+        self.folders.pack(side=TOP, fill=BOTH, expand=True)
 
     def update_folders(self, folders: dict):
 
@@ -105,7 +124,9 @@ class FoldersPanel(tk.CTkScrollableFrame):
         color = "grey90" if idx % 2 == 0 else "grey85"
 
         def remove_folder_entry(abs_path): self.pubsub.publish(Topic.REMOVE_FOLDER_PRESSED, abs_path)
-        entry = FolderEntry(self, path, size, date, self.folder_22, remove_folder_entry, fg_color=color, bg_color=color)
+        entry = FolderEntry(self.folders, path, size, date, self.folder_22, remove_folder_entry,
+                            fg_color=color,
+                            bg_color=color)
         entry.pack(fill=X, expand=False)
 
         self.elements.append(entry)
