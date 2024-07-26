@@ -6,12 +6,12 @@ from controller.utils import get_folder_size, friendly_date, threaded
 from configs import ConfigManager
 from customtkinter import filedialog
 from view.view import ApplicationView
-from model.model import ApplicationModel, STATUS_MESSAGE_CHANGED, MERGE_FOLDER_CHANGE, CONFIGS_CHANGE, \
-    FOLDERS_TO_SCAN_CHANGED, RESULTS_ARRIVED
+from model.model import ApplicationModel, Topic, PubSubBroker
 
 
 class ApplicationController:
     def __init__(self,
+                 pubsub: PubSubBroker,
                  config: ConfigManager,
                  model: ApplicationModel,
                  view: ApplicationView,
@@ -19,32 +19,18 @@ class ApplicationController:
                  ):
         super().__init__()
 
+        # app
+        self.pubsub = pubsub
         self.config = config
         self.model = model
         self.view = view
         self.service = service
 
-        toolbar = self.view.root.toolbar_panel
-        status = self.view.root.status_panel
-        folders = self.view.root.folders_to_scan
-        results = self.view.root.results_panel
-
-        # commands bindings
-        toolbar.add_button.configure(command=self.browse_directory_to_scan)
-        toolbar.select_folder_button.configure(command=self.browse_destination_directory)
-        toolbar.scan_button.configure(command=self.scan_for_duplicates)
-        folders.configure(remove_item_callback=self.remove_directory)
-
-        # event bindings
-        self.model.subscribe(STATUS_MESSAGE_CHANGED, status.set_message)
-        self.model.subscribe(MERGE_FOLDER_CHANGE, toolbar.set_destination_directory)
-        self.model.subscribe(FOLDERS_TO_SCAN_CHANGED, folders.update_folders)
-        self.model.subscribe(RESULTS_ARRIVED, results.show_final_result)
-        self.model.subscribe(CONFIGS_CHANGE, self.config.update_configs)
-        self.model.subscribe(CONFIGS_CHANGE, self.config.update_configs)
-        self.model.subscribe(CONFIGS_CHANGE, self.config.update_configs)
-        # TODO Add event to update scan and scan status
-        # TODO Add event to update scan results
+        # subscribe to events bindings
+        self.pubsub.subscribe(Topic.ADD_FOLDER_PRESSED, self.browse_directory_to_scan)
+        self.pubsub.subscribe(Topic.SELECT_FOLDER_PRESSED, self.browse_destination_directory)
+        self.pubsub.subscribe(Topic.SCAN_DUPLICATES_PRESSED, self.scan_for_duplicates)
+        self.pubsub.subscribe(Topic.REMOVE_FOLDER_PRESSED, self.remove_directory_to_scan)
 
         # restore state
         self.update_model()
@@ -75,7 +61,7 @@ class ApplicationController:
         if directory is not None and os.path.isdir(directory):
             self.model.set_merge_folder(directory)
 
-    def remove_directory(self, path):
+    def remove_directory_to_scan(self, path):
         self.model.remove_folder_to_scan(path)
 
     @threaded

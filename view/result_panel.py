@@ -1,6 +1,8 @@
 import customtkinter as tk
 from tkinter import LEFT, X, W, BOTH, RIGHT, TOP
 
+from model.pubsub import PubSubBroker, Topic
+
 
 class MultiEntry(tk.CTkFrame):
     def __init__(self, master, entries: list, bg_color, **kwargs):
@@ -15,8 +17,12 @@ class MultiEntry(tk.CTkFrame):
 
 
 class ResultsPanel(tk.CTkScrollableFrame):
-    def __init__(self, master: tk.CTkFrame, **kwargs):
+    def __init__(self, master: tk.CTkFrame, pubsub:PubSubBroker, **kwargs):
         super().__init__(master, **kwargs)
+
+        # subscribe to events
+        self.pubsub = pubsub
+        self.pubsub.subscribe(Topic.RESULTS_ARRIVED, self.show_final_result)
 
         self.items = None
         self.root = tk.CTkFrame(self, bg_color="grey90", fg_color="grey90")

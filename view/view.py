@@ -1,6 +1,7 @@
 import customtkinter as tk
 from tkinter import LEFT, BOTH, X, W
 
+from model.model import PubSubBroker
 from view.root_panel import RootPanel
 
 tk.set_appearance_mode("System")
@@ -8,7 +9,7 @@ tk.set_default_color_theme("blue")
 
 
 class ApplicationView(tk.CTk):
-    def __init__(self):
+    def __init__(self, pubsub: PubSubBroker):
         super().__init__()
 
         self.minsize(1000, 400)
@@ -25,5 +26,5 @@ class ApplicationView(tk.CTk):
         self.geometry("%dx%d+%d+%d" % (w, h, x, y))
 
         # root frame
-        self.root = RootPanel(self)
+        self.root = RootPanel(self, pubsub)
         self.root.pack(fill=BOTH, expand=True)
