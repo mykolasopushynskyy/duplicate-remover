@@ -1,11 +1,11 @@
 import customtkinter as tk
-from tkinter import LEFT, X, W, BOTH, RIGHT, TOP
+from tkinter import LEFT, X, W, BOTH, RIGHT, TOP, END, Y, DISABLED, NORMAL, NONE
 
 from model.pubsub import PubSubBroker, Topic
 
 
-class ResultsPanel(tk.CTkScrollableFrame):
-    def __init__(self, master: tk.CTkFrame, pubsub:PubSubBroker, **kwargs):
+class ResultsPanel(tk.CTkFrame):
+    def __init__(self, master: tk.CTkFrame, pubsub: PubSubBroker, **kwargs):
         super().__init__(master, **kwargs)
 
         # subscribe to events
@@ -13,14 +13,21 @@ class ResultsPanel(tk.CTkScrollableFrame):
         self.pubsub.subscribe(Topic.SCANNING, self.scanning_change)
         self.pubsub.subscribe(Topic.RESULTS_ARRIVED, self.show_final_result)
 
-        self.root = tk.CTkFrame(self, bg_color="grey90", fg_color="grey90")
-        self.root.pack(side=TOP, fill=BOTH, expand=True)
-
-        self.label_text = None
+        # self.configure(fg_color="red")
+        self.label_text = tk.CTkTextbox(self,
+                                        font=("Courier New", 14),
+                                        text_color="black",
+                                        bg_color="grey85",
+                                        fg_color="grey85",
+                                        state=NORMAL,
+                                        wrap=NONE
+                                        )
+        self.label_text.pack(side=TOP, fill=BOTH, expand=True)
 
     def show_final_result(self, duplicates):
+        if len(duplicates) == 0:
+            return
 
-        bg_color = "grey85"
         text = "┌───┬──────────────────────────────────────────────────────────────\n"
         for i, entries in enumerate(duplicates):
             text += "\n".join([f"│{i + 1:<3}│ {value}" for i, value in enumerate(entries)])
@@ -28,19 +35,9 @@ class ResultsPanel(tk.CTkScrollableFrame):
                 text += "\n├───┼──────────────────────────────────────────────────────────────\n"
         text += "\n└───┴──────────────────────────────────────────────────────────────"
 
-        self.label_text = tk.CTkLabel(self.root,
-                                      text=text,
-                                      font=("Courier New", 14),
-                                      text_color="black",
-                                      height=14,
-                                      justify=LEFT,
-                                      bg_color=bg_color,
-                                      fg_color=bg_color,
-                                      anchor=W
-                                      )
-        self.label_text.pack(fill=X, expand=False, anchor=W, pady=5, padx=5, ipadx=5)
+        self.label_text.insert(1.0, text)
 
     def scanning_change(self, is_scanning):
         if is_scanning:
             if self.label_text:
-                self.label_text.destroy()
+                self.label_text.delete(1.0, END)

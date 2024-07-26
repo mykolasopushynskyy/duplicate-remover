@@ -1,6 +1,6 @@
 import customtkinter as tk
 
-from tkinter import ttk, LEFT, BOTH, RIGHT, Y, VERTICAL, X, W, TOP, NORMAL, HORIZONTAL
+from tkinter import ttk, LEFT, BOTH, RIGHT, Y, VERTICAL, X, W, TOP, NORMAL, HORIZONTAL, BOTTOM
 
 from model.pubsub import PubSubBroker
 from view.folders_panel import FoldersPanel
@@ -19,7 +19,7 @@ class RootPanel(tk.CTkFrame):
 
         # separator
         self.top_separator = ttk.Separator(self, orient=HORIZONTAL)
-        self.top_separator.pack(side=TOP, fill=X, expand=False, pady=0)
+        self.top_separator.pack(side=TOP, fill=X, expand=False)
 
         # main area frame
         self.middle = tk.CTkFrame(self, bg_color="grey90", fg_color="grey90")
@@ -27,19 +27,19 @@ class RootPanel(tk.CTkFrame):
 
         # left main panel
         self.folders_to_scan = FoldersPanel(self.middle, pubsub, bg_color="grey90", fg_color="grey90", width=350)
-        self.folders_to_scan.pack(side=LEFT, fill=Y, expand=False)
+        self.folders_to_scan.pack(side=LEFT, fill=BOTH, expand=False)
 
         # separator
         self.top_separator = ttk.Separator(self.middle, orient=VERTICAL)
-        self.top_separator.pack(side=LEFT, fill=Y, expand=False, pady=0)
+        self.top_separator.pack(side=LEFT, fill=BOTH, expand=False)
 
-        # left main panel
+        # right main panel
         self.results_panel = ResultsPanel(self.middle, pubsub, bg_color="grey90", fg_color="grey90")
         self.results_panel.pack(side=LEFT, fill=BOTH, expand=True)
 
-        self.bottom_separator = ttk.Separator(self, orient=HORIZONTAL)
-        self.bottom_separator.pack(side=TOP, fill=X, expand=False, pady=0)
-
         # status panel frame
-        self.status_panel = StatusPanel(self, pubsub)
-        self.status_panel.pack(side=TOP, fill=BOTH, expand=False, ipady=2)
+        self.status_panel = StatusPanel(self, pubsub, height=18)
+        self.status_panel.pack(side=BOTTOM, fill=X, expand=False, ipady=2)
+
+        self.bottom_separator = ttk.Separator(self, orient=HORIZONTAL)
+        self.bottom_separator.pack(side=BOTTOM, fill=X, expand=False)
