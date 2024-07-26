@@ -10,6 +10,8 @@ class ApplicationModel:
         # model data
         self.merge_folder = ""
         self.folders_to_scan = {}
+        # TODO Add folders to skip in search
+        # TODO Add some predefined folders to skip like system dirs, etc.
 
         # subscribe for config change
         self.pubsub.subscribe(events.MODEL_LOAD, self.from_configs)

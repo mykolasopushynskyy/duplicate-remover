@@ -12,6 +12,7 @@ class DuplicateScanner:
         self.model = model
         self.pubsub = pubsub
 
+    # TODO Implement proper error handling for file scanning
     def scan_for_duplicates(self):
         results = []
 

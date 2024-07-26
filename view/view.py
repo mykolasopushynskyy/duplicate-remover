@@ -8,6 +8,8 @@ tk.set_appearance_mode("System")
 tk.set_default_color_theme("blue")
 
 
+# TODO Implement proper menus for this application
+# TODO Disable views during search like toolbar, folder list, etc
 class ApplicationView(tk.CTk):
     def __init__(self, pubsub: PubSubBroker):
         super().__init__()
