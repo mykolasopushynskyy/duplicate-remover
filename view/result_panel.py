@@ -33,28 +33,28 @@ commandsToRemove = (
 )
 
 
-class ReadOnlyText(tkinter.Text):
-    tagInit = False
+class ReadOnlyText(tk.CTkTextbox):
+    is_tag_initialized = False
 
     def __init__(self, master, **kwargs):
-        tkinter.Text.__init__(self, master, **kwargs)
-        if not ReadOnlyText.tagInit:
-            self.init_tag()
+        tk.CTkTextbox.__init__(self, master, **kwargs)
+        if not ReadOnlyText.is_tag_initialized:
+            self.initialize_tag()
 
         # Create a new binding table list, replace the default Text binding table by the ResultReadOnlyText one
-        bindTags = tuple(tag if tag != "Text" else "ReadOnlyText" for tag in self.bindtags())
-        self.bindtags(bindTags)
+        bindTags = tuple(tag if tag != "Text" else "ReadOnlyText" for tag in self._textbox.bindtags())
+        self._textbox.bindtags(bindTags)
 
-    def init_tag(self):
+    def initialize_tag(self):
         """
         Just go through all binding for the Text widget.
         If the command is allowed, recopy it in the ROText binding table.
         """
-        for key in self.bind_class("Text"):
+        for key in self._textbox.bind_class("Text"):
             if key not in commandsToRemove:
-                command = self.bind_class("Text", key)
-                self.bind_class("ReadOnlyText", key, command)
-        ReadOnlyText.tagInit = True
+                command = self._textbox.bind_class("Text", key)
+                self._textbox.bind_class("ReadOnlyText", key, command)
+        ReadOnlyText.is_tag_initialized = True
 
 
 class ResultsPanel(tk.CTkFrame):
@@ -80,9 +80,9 @@ class ResultsPanel(tk.CTkFrame):
 
         self.label_text = ReadOnlyText(self,
                                        font=("Courier New", 14),
-                                       # text_color="black",
-                                       # bg_color="grey85",
-                                       # fg_color="grey85",
+                                       text_color="black",
+                                       bg_color="grey85",
+                                       fg_color="grey85",
                                        wrap=NONE
                                        )
         self.label_text.pack(side=TOP, fill=BOTH, expand=True)
