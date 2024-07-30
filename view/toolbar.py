@@ -1,9 +1,14 @@
 import os
 
-from PySide6.QtCore import Slot, QPoint, Qt, QSize, QLine
-from PySide6.QtGui import QAction, QIcon, QImage, QPaintEvent, QPainter
-from PySide6.QtWidgets import QMainWindow, QToolBar, QPushButton, QToolButton, QWidget, QSizePolicy, QLabel, QStyle, \
-    QSplitter, QStyleOption, QStyleOptionToolBar, QFileDialog
+from PySide6.QtCore import Slot, Qt
+from PySide6.QtGui import QAction
+from PySide6.QtWidgets import (
+    QToolBar,
+    QWidget,
+    QSizePolicy,
+    QLabel,
+    QFileDialog,
+)
 
 from configs import HOME_DIR
 from model.signals import AppSignals
@@ -29,26 +34,41 @@ class DRToolbar(QToolBar):
         self.addAction(self.add_folder)
 
         # Spacer
-        self.spacer = QWidget(self)
-        self.spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-        self.spacer.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
-        self.addWidget(self.spacer)
+        self.spacer_1 = QWidget(self)
+        self.spacer_1.setSizePolicy(
+            QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred
+        )
+        self.spacer_1.setFixedWidth(370)
+        self.spacer_1.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        self.addWidget(self.spacer_1)
 
         # Select duplicates
         self.search_duplicates = QAction(icon=icons.run(size=20), text="Run search")
-        self.search_duplicates.triggered.connect(lambda: print("Search duplicates"))
+        self.search_duplicates.triggered.connect(self.scan_pressed)
         self.addAction(self.search_duplicates)
 
         # Select folder button
-        self.destination_folder = QAction(icon=icons.open_folder(size=20), text="Destination folder")
+        self.destination_folder = QAction(
+            icon=icons.open_folder(size=20), text="Destination folder"
+        )
         self.destination_folder.triggered.connect(self.select_destination_folder)
         self.addAction(self.destination_folder)
 
         # Select folder label
         self.destination_folder_label = QLabel(text="Folder address")
-        self.destination_folder_label.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
-        self.destination_folder_label.setFixedWidth(400)
+        self.destination_folder_label.setSizePolicy(
+            QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred
+        )
+        self.destination_folder_label.setFixedWidth(350)
         self.addWidget(self.destination_folder_label)
+
+        # Spacer
+        self.spacer_2 = QWidget(self)
+        self.spacer_2.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred
+        )
+        self.spacer_2.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        self.addWidget(self.spacer_2)
 
         # Settings button
         self.settings = QAction(icon=icons.configs(size=20), text="Settings")
@@ -65,15 +85,22 @@ class DRToolbar(QToolBar):
 
     @Slot(dict)
     def select_destination_folder(self):
-        directory = QFileDialog.getExistingDirectory(self, caption="Select destination directory", dir=HOME_DIR)
+        directory = QFileDialog.getExistingDirectory(
+            self, caption="Select destination directory", dir=HOME_DIR
+        )
         self.signals.MERGE_FOLDER_CHANGED.emit(directory)
 
     @Slot(dict)
     def add_scan_folder(self):
-        directory = QFileDialog.getExistingDirectory(self, caption="Select folder to scan", dir=HOME_DIR)
+        directory = QFileDialog.getExistingDirectory(
+            self, caption="Select folder to scan", dir=HOME_DIR
+        )
         size = get_folder_size(directory)
         date = friendly_date(os.stat(directory).st_ctime)
         directory_record = dict(path=directory, size=size, date=date)
 
         self.signals.ADD_FOLDER.emit(directory_record)
 
+    @Slot(dict)
+    def scan_pressed(self):
+        self.signals.SCAN_PRESSED.emit()

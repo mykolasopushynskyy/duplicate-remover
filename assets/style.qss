@@ -1,24 +1,31 @@
-QListWidget
-{
+QTextEdit  {
+    border: none;
+    border-radius: 10px;
+
+    font-size: 16;
+    font-family: "Courier New", monospace;
+}
+
+QListWidget {
     border: none;
     border-radius: 10px;
     background: white;
 }
 
-QListWidget::item:hover
-{
+QListWidget::item:hover {
     border-radius: 10px;
     background: rgb(240,240,240);
 }
 
-QListWidget::item:selected:hover
-{
+QListWidget::item:selected:hover {
     border-radius: 10px;
     background: white;
 }
 
 *[qss = "file_icon"] {
     background: none;
+    margin: 0px;
+    padding: 0px;
 }
 
 *[qss = "file_label"] {

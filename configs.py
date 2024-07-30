@@ -20,9 +20,7 @@ CONFIG_FILE_LOCATION_NAME = "config.json"
 
 class ConfigManager:
     def __init__(
-            self,
-            signals: AppSignals,
-            config_file: str = CONFIG_FILE_LOCATION_NAME
+        self, signals: AppSignals, config_file: str = CONFIG_FILE_LOCATION_NAME
     ):
         self.signals = signals
         self.config_dir = user_config_dir(APP_NAME)
@@ -54,6 +52,5 @@ class ConfigManager:
 
     @Slot(dict)
     def update_configs(self, model: dict):
-        for k in model:
-            self.config["folders_to_scan"][k] = model[k]
+        self.config["folders_to_scan"] = model
         self.save_config()

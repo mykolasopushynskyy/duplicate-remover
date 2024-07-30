@@ -1,10 +1,8 @@
-import os
-
 from PySide6.QtCore import Slot
 
 from controller.duplicate_scanner import DuplicateScanner
 from model.signals import AppSignals
-from util.utils import get_folder_size, friendly_date, short_path
+from util.utils import short_path, threaded
 
 from model.model import ApplicationModel
 
@@ -27,7 +25,7 @@ class ApplicationController:
 
         self.signals.ADD_FOLDER.connect(self.add_folder)
         self.signals.REMOVE_FOLDER.connect(self.remove_folder)
-        self.signals.SCAN_DUPLICATES_PRESSED.connect(self.scan)
+        self.signals.SCAN_PRESSED.connect(self.scan)
 
     # @threaded
     @Slot(None)
@@ -47,6 +45,7 @@ class ApplicationController:
 
     # @threaded
     @Slot(None)
+    @threaded
     def scan(self):
         # TODO make sure we set everything correctly
         # TODO Consider to add validators for this

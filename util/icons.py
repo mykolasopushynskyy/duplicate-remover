@@ -1,7 +1,6 @@
 from PIL import Image, ImageFont, ImageDraw
-from PIL.ImageQt import QImage, QPixmap, toqpixmap
+from PIL.ImageQt import toqpixmap
 from PySide6.QtGui import QIcon
-from customtkinter import CTkImage
 
 from configs import ICONS_FONT_FILE_PATH
 
@@ -10,6 +9,7 @@ FOLDER_OPEN_SYM = "\uF115"
 MINUS_SYM = "\ue800"
 PLUS_SYM = "\ue801"
 RUN_SYM = "\ue802"
+CLOSE_SYM = "\ue805"
 SPINNER_SYM = "\ue838"
 PICTURE_FILE_SYM = "\uF1C5"
 UNSPECIFIED_FILE_SYM = "\uE803"
@@ -65,6 +65,10 @@ def plus(size=16, color=(80, 76, 74)):
 
 def run(size=16, color=(50, 150, 50)):
     return get_icon(RUN_SYM, size, color)
+
+
+def close(size=16, color=(50, 150, 50)):
+    return get_icon(CLOSE_SYM, size, color)
 
 
 def spinner(size=16, color=(80, 76, 74)):
