@@ -1,20 +1,29 @@
-*[qss = "odd_item"] {
+QListWidget
+{
+    border: none;
+    border-radius: 10px;
     background: white;
 }
 
-*[qss = "even_item"] {
-    background: rgb(245, 245, 245);
+QListWidget::item:hover
+{
+    border-radius: 10px;
+    background: rgb(240,240,240);
+}
+
+QListWidget::item:selected:hover
+{
+    border-radius: 10px;
+    background: white;
 }
 
 *[qss = "file_icon"] {
-    width: 40px;
-    height: 40px;
     background: none;
 }
 
 *[qss = "file_label"] {
     border: none;
-    font-size: 14px;
+    font-size: 12px;
     background: none;
     margin: 0px;
 }

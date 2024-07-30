@@ -75,5 +75,5 @@ def configs(size=16, color=(80, 76, 74)):
     return get_icon(CONFIGS_SYM, size, color)
 
 
-def open_folder(size=16, color=(80, 76, 74)):
+def open_folder(size=16, color=(183, 143, 60)):
     return get_icon(FOLDER_OPEN_SYM, size, color)
