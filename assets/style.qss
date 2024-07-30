@@ -23,7 +23,7 @@ QListWidget::item:selected:hover
 
 *[qss = "file_label"] {
     border: none;
-    font-size: 12px;
+    font-size: 14px;
     background: none;
     margin: 0px;
 }

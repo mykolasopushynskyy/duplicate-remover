@@ -37,13 +37,13 @@ class ApplicationController:
         # TODO Consider to add validators for this
         self.model.add_folder_to_scan(directory_record)
         self.signals.FOLDERS_TO_SCAN_CHANGED.emit(self.model.folders_to_scan)
-        self.signals.CONFIGS_CHANGE.emit(self.model)
+        self.signals.CONFIGS_CHANGE.emit(self.model.folders_to_scan)
 
     @Slot(str)
     def remove_folder(self, path):
         self.model.remove_folder_to_scan(path)
         self.signals.FOLDERS_TO_SCAN_CHANGED.emit(self.model.folders_to_scan)
-        self.signals.CONFIGS_CHANGE.emit(self.model)
+        self.signals.CONFIGS_CHANGE.emit(self.model.folders_to_scan)
 
     # @threaded
     @Slot(None)

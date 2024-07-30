@@ -31,7 +31,6 @@ class ConfigManager:
         self.config = self.load_config()
 
         # subscribe for config change
-        # QObject.connect(self, signal=signals.CONFIGS_CHANGE, receiver=self.update_configs)
         signals.CONFIGS_CHANGE.connect(self.update_configs)
 
     def load_config(self):
@@ -55,6 +54,6 @@ class ConfigManager:
 
     @Slot(dict)
     def update_configs(self, model: dict):
-        for k, v in model:
-            self.config[k] = v
+        for k in model:
+            self.config["folders_to_scan"][k] = model[k]
         self.save_config()

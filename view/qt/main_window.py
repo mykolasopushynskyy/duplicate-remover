@@ -38,7 +38,7 @@ class FolderItem(QWidget):
 
         self.h_layout.addLayout(self.v_icon_layout, 0)
 
-        self.path_label = QLabel(text=f"Path: {utils.short_path(self.path)}")
+        self.path_label = QLabel(text=utils.short_path(self.path))
         self.path_label.setProperty("qss", "file_label")
         self.v_label_layout.addWidget(self.path_label, 0, Qt.AlignmentFlag.AlignLeft)
 
@@ -96,7 +96,6 @@ class FoldersList(QGroupBox):
             self.add_folder(folder)
 
     def add_folder(self, folder: dict):
-        # on_remove = lambda
         folder_widget = FolderItem(folder["path"],
                                    "Size: %s" % folder["size"],
                                    "Date: %s" % folder["date"],
@@ -109,11 +108,9 @@ class FoldersList(QGroupBox):
 
         self.list_widget.addItem(folder_item)
         self.list_widget.setItemWidget(folder_item, folder_widget)
-        # folder_widget.set_on_remove(lambda: self.remove_folder(folder["path"]))
 
     def remove_folder(self, list_widget, path):
         self.signals.REMOVE_FOLDER.emit(path)
-        print("Removed %s" % path)
         for i in range(0, list_widget.count()):
             w = list_widget.itemWidget(list_widget.item(i))
             if w is not None and w.path == path:
@@ -138,6 +135,8 @@ class CentralWidget(QWidget):
         self.layout.addWidget(self.results)
 
 
+# TODO Implement proper menus for this application
+# TODO Disable views during search like toolbar, folder list, etc
 class DRQMainWindow(QMainWindow):
     def __init__(self, signals: AppSignals):
         QMainWindow.__init__(self)
