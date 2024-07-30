@@ -4,6 +4,7 @@ PYTHON = $(VENV_DIR)/bin/python
 PIP = $(VENV_DIR)/bin/pip
 BLACK = $(VENV_DIR)/bin/black
 AUTOFLAKE = $(VENV_DIR)/bin/autoflake
+PIPREQS = $(VENV_DIR)/bin/pipreqs
 
 # Define the directories or files to format and check
 SRC_DIRS = .
@@ -12,7 +13,7 @@ SRC_DIRS = .
 $(VENV_DIR)/bin/activate:
 	python3 -m venv $(VENV_DIR)
 	$(PIP) install --upgrade pip
-	$(PIP) install black autoflake
+	$(PIP) install black autoflake pipreqs
 
 # Target to apply code style using black
 format: $(VENV_DIR)/bin/activate
@@ -22,7 +23,11 @@ format: $(VENV_DIR)/bin/activate
 clean-imports: $(VENV_DIR)/bin/activate
 	$(AUTOFLAKE) --in-place --remove-all-unused-imports --recursive $(SRC_DIRS)
 
+# Target to generate requirements.txt using pipreqs
+requirements.txt: $(VENV_DIR)/bin/activate
+	$(PIPREQS) --force .
+
 # Target to run both formatting and import cleanup
 lint: format clean-imports
 
-.PHONY: format clean-imports lint $(VENV_DIR)/bin/activate
+.PHONY: format clean-imports lint $(VENV_DIR)/bin/activate requirements.txt

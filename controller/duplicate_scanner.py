@@ -1,16 +1,15 @@
 import os
 
-from model import events
+from model.signals import AppSignals
 from util.utils import get_hash, is_image_file, convert_size
 from model.model import ApplicationModel
-from model.pubsub import PubSubBroker
 from timeit import default_timer as timer
 
 
 class DuplicateScanner:
-    def __init__(self, model: ApplicationModel, pubsub: PubSubBroker):
+    def __init__(self, signals: AppSignals, model: ApplicationModel):
+        self.signals = signals
         self.model = model
-        self.pubsub = pubsub
 
     # TODO Implement proper error handling for file scanning
     def scan_for_duplicates(self):
@@ -122,7 +121,7 @@ class DuplicateScanner:
             f"{convert_size(size_to_save)} can be saved, "
             f"{end - start:.4} s passed"
         )
-        self.pubsub.publish(events.STATUS_MESSAGE_SET, message)
+        self.signals.STATUS_MESSAGE_SET.emit(message)
 
         return results
 
@@ -134,4 +133,4 @@ class DuplicateScanner:
             f"checking {files_checked_v2}, additional check {files_checked_v3}"
         )
 
-        self.pubsub.publish(events.STATUS_MESSAGE_SET, message)
+        self.signals.STATUS_MESSAGE_SET.emit(message)

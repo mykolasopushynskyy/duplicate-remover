@@ -1,0 +1,79 @@
+*[qss = "odd_item"] {
+    background: white;
+}
+
+*[qss = "even_item"] {
+    background: rgb(245, 245, 245);
+}
+
+*[qss = "file_icon"] {
+    width: 40px;
+    height: 40px;
+    background: none;
+}
+
+*[qss = "file_label"] {
+    border: none;
+    font-size: 14px;
+    background: none;
+    margin: 0px;
+}
+
+*[qss = "file_size"] {
+    border: none;
+    font-size: 10px;
+    color: #808080;
+    background: none;
+    margin: 0px;
+}
+
+*[qss = "file_date"] {
+    border: none;
+    font-size: 10px;
+    color: #1e90ff;
+    background: none;
+    margin: 0px;
+}
+
+QGroupBox {
+    background: none;
+}
+
+QPushButton {
+    border: none;
+    border-radius: 5px;
+    min-width: 25px;
+    min-height: 25px;
+}
+
+QPushButton:hover {
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(223, 218, 216);
+    min-width: 25px;
+    min-height: 25px;
+}
+
+QLabel {
+    border: none;
+    background: white;
+    border-radius: 5px;
+    margin: 7px 0px 7px;
+}
+
+DRToolbar {
+    border: none;
+    background: rgb(236, 231, 229);
+}
+
+QToolButton {
+    background-color: rgb(236, 231, 229);
+    border-radius: 5px;
+    margin: 3px;
+}
+
+QToolButton:hover {
+    background-color: rgb(223, 218, 216);
+    border-radius: 5px;
+    margin: 3px;
+};

@@ -1,12 +1,11 @@
-from model import events
-from model.pubsub import PubSubBroker
+from PySide6.QtCore import Slot
+
+from model.signals import AppSignals
 
 
 class ApplicationModel:
-    def __init__(self, pubsub: PubSubBroker):
-        super().__init__()
-        self.pubsub = pubsub
 
+    def __init__(self, signals: AppSignals):
         # model data
         self.merge_folder = ""
         self.folders_to_scan = {}
@@ -14,9 +13,10 @@ class ApplicationModel:
         # TODO Add some predefined folders to skip like system dirs, etc.
 
         # subscribe for config change
-        self.pubsub.subscribe(events.MODEL_LOAD, self.from_configs)
+        signals.MODEL_LOAD.connect(self.from_configs)
 
-    def from_configs(self, configs):
+    @Slot(dict)
+    def from_configs(self, configs: dict):
         self.merge_folder = configs["merge_folder"]
         self.folders_to_scan = configs["folders_to_scan"]
 
@@ -29,7 +29,7 @@ class ApplicationModel:
         self.merge_folder = path
 
     def add_folder_to_scan(self, record: dict):
-        self.folders_to_scan[record.get("path")] = record
+        self.folders_to_scan[record["path"]] = record
 
     def remove_folder_to_scan(self, path):
         self.folders_to_scan.pop(path)
