@@ -6,7 +6,7 @@ from controller.duplicate_scanner import DuplicateScanner
 from model.model import ApplicationModel
 from model.signals import AppSignals
 
-from view.qt.application import DRQApplication
+from view.application import DRQApplication
 
 
 class DuplicateRemover:

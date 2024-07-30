@@ -1,11 +1,10 @@
 from typing import Sequence
 
-from PySide6.QtCore import Qt, QPoint
-from PySide6.QtWidgets import QApplication, QVBoxLayout, QLineEdit, QPushButton, QMainWindow
+from PySide6.QtWidgets import QApplication
 
 import configs
 from model.signals import AppSignals
-from view.qt.main_window import DRQMainWindow
+from view.main_window import DRQMainWindow
 
 
 class DRQApplication(QApplication):

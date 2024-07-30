@@ -1,13 +1,11 @@
-from PySide6 import QtGui
-from PySide6.QtCore import Slot, QPoint, Qt, QSize, QFile
-from PySide6.QtGui import QAction, QIcon, QImage
-from PySide6.QtWidgets import QMainWindow, QToolBar, QPushButton, QToolButton, QWidget, QSizePolicy, QLabel, QStyle, \
-    QHBoxLayout, QVBoxLayout, QGridLayout, QGroupBox, QScrollArea, QListWidget, QListWidgetItem, QAbstractItemView
+from PySide6.QtCore import Slot, QPoint, Qt, QSize
+from PySide6.QtWidgets import QMainWindow, QPushButton, QWidget, QSizePolicy, QLabel, QHBoxLayout, QVBoxLayout, \
+    QGroupBox, QListWidget, QListWidgetItem, QAbstractItemView
 
 import configs
 from model.signals import AppSignals
 from util import icons, utils
-from view.qt.toolbar import DRToolbar
+from view.toolbar import DRToolbar
 
 DEFAULT_STATUS_TEXT = "···"
 
