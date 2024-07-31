@@ -9,6 +9,7 @@ class ApplicationModel:
         # model data
         self.merge_folder = ""
         self.folders_to_scan = {}
+        self.duplicates = None
         # TODO Add folders to skip in search
         # TODO Add some predefined folders to skip like system dirs, etc.
 
@@ -33,3 +34,6 @@ class ApplicationModel:
 
     def remove_folder_to_scan(self, path):
         self.folders_to_scan.pop(path)
+
+    def set_duplicates(self, duplicates):
+        self.duplicates = duplicates

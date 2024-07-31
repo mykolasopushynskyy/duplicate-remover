@@ -42,10 +42,17 @@ class DRToolbar(QToolBar):
         self.spacer_1.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         self.addWidget(self.spacer_1)
 
-        # Select duplicates
+        # Search duplicates
         self.search_duplicates = QAction(icon=icons.run(size=20), text="Run search")
         self.search_duplicates.triggered.connect(self.scan_pressed)
         self.addAction(self.search_duplicates)
+
+        # Merge duplicates
+        self.merge_duplicates = QAction(
+            icon=icons.merge(size=20), text="Merge duplicates"
+        )
+        self.merge_duplicates.triggered.connect(self.merge_pressed)
+        self.addAction(self.merge_duplicates)
 
         # Select folder button
         self.destination_folder = QAction(
@@ -102,6 +109,10 @@ class DRToolbar(QToolBar):
 
             self.signals.ADD_FOLDER.emit(directory_record)
 
-    @Slot(dict)
+    @Slot()
     def scan_pressed(self):
         self.signals.SCAN_PRESSED.emit()
+
+    @Slot()
+    def merge_pressed(self):
+        self.signals.MERGE_PRESSED.emit()

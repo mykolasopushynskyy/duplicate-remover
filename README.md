@@ -12,9 +12,9 @@
 > TBD
 
 ### Запуск 
-> [!NOTE]
-> TBD
+Для запуску запустіть скрипт `./duplicate-remover.py`. 
 
 ### Ресурси використані в проєкті
 1. [Fontello](https://fontello.com/) - шрифт з вбудованими картинками
+1. [Qt for python](https://wiki.qt.io/Qt_for_Python) - графічний інтерфейс
 1. TBD

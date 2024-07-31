@@ -119,7 +119,7 @@ class DuplicateScanner:
             f"Scanned {convert_size(files_scanned_size)} {files_scanned} files, "
             f"{num_od_duplicates} flies duplicated, "
             f"{convert_size(size_to_save)} can be saved, "
-            f"{end - start:.4} s passed"
+            f"{end - start:.2f}s passed"
         )
         self.signals.STATUS_MESSAGE_SET.emit(message)
 

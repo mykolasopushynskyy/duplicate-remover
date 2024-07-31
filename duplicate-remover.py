@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import sys
 
 
@@ -7,7 +8,7 @@ from controller.duplicate_scanner import DuplicateScanner
 from model.model import ApplicationModel
 from model.signals import AppSignals
 
-from view.application import DRQApplication
+from view.view import DRQApplication
 
 
 class DuplicateRemover:

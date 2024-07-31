@@ -51,7 +51,7 @@ class ApplicationController:
         # TODO Consider to add validators for this
         # TODO Check if folders-to-scan are not subdirs of each other
         # TODO Skip
-
+        self.model.set_duplicates(None)
         self.signals.SCANNING.emit(True)
         result = self.service.scan_for_duplicates()
 

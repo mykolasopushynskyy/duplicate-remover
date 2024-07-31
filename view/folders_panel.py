@@ -75,7 +75,9 @@ class FolderItem(QWidget):
 
         self.h_layout.addLayout(self.v_label_layout, 1)
 
-        self.remove_button = QPushButton(icon=icons.minus(size=20, color=(255, 0, 0)))
+        self.remove_button = QPushButton(
+            icon=icons.close(size=20, color=(237, 106, 94))
+        )
         self.remove_button.setFixedWidth(20)
         self.remove_button.setSizePolicy(
             QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred

@@ -16,6 +16,7 @@ UNSPECIFIED_FILE_SYM = "\uE803"
 TEXT_FILE_SYM = "\uF0F6"
 CONFIGS_SYM = "\uE804"
 FILES_SYM = "\uF0C5"
+MERGE_SYM = "\uF1D9"
 
 
 def get_icon(symbol: str, font_size: int, font_color: tuple):
@@ -81,3 +82,7 @@ def configs(size=16, color=(80, 76, 74)):
 
 def open_folder(size=16, color=(183, 143, 60)):
     return get_icon(FOLDER_OPEN_SYM, size, color)
+
+
+def merge(size=16, color=(50, 150, 50)):
+    return get_icon(MERGE_SYM, size, color)
