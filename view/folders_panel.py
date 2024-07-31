@@ -53,6 +53,7 @@ class FolderItem(QWidget):
         self.path_label = QLabel(text=utils.short_path(self.path))
         self.path_label.setProperty("qss", "file_label")
         self.path_label.setFixedHeight(16)
+        self.path_label.setMaximumWidth(245)
         self.v_label_layout.addWidget(self.path_label, 0, Qt.AlignmentFlag.AlignLeft)
 
         self.size_label = QLabel(text=self.size)
@@ -75,6 +76,7 @@ class FolderItem(QWidget):
         self.h_layout.addLayout(self.v_label_layout, 1)
 
         self.remove_button = QPushButton(icon=icons.minus(size=20, color=(255, 0, 0)))
+        self.remove_button.setFixedWidth(20)
         self.remove_button.setSizePolicy(
             QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred
         )
@@ -95,6 +97,7 @@ class FoldersList(QGroupBox):
     def __init__(self, signals: AppSignals, title: str):
         QGroupBox.__init__(self, title)
         self.signals = signals
+        self.paths = []
         self.signals.MODEL_LOAD.connect(self.load_folders)
         self.signals.ADD_FOLDER.connect(self.add_folder)
 
@@ -105,6 +108,7 @@ class FoldersList(QGroupBox):
         self.list_widget.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
+        self.list_widget.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.list_widget.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
         self.layout.addWidget(self.list_widget)
 
@@ -113,6 +117,11 @@ class FoldersList(QGroupBox):
             self.add_folder(folder)
 
     def add_folder(self, folder: dict):
+        # don't add folder if exist
+        if folder["path"] in self.paths:
+            return
+
+        # add folder
         folder_widget = FolderItem(
             folder["path"],
             "Size: %s" % folder["size"],
@@ -126,6 +135,7 @@ class FoldersList(QGroupBox):
 
         self.list_widget.addItem(folder_item)
         self.list_widget.setItemWidget(folder_item, folder_widget)
+        self.paths.append(folder["path"])
 
     def remove_folder(self, list_widget, path):
         self.signals.REMOVE_FOLDER.emit(path)
@@ -133,3 +143,4 @@ class FoldersList(QGroupBox):
             w = list_widget.itemWidget(list_widget.item(i))
             if w is not None and w.path == path:
                 list_widget.takeItem(i)
+                self.paths.remove(path)

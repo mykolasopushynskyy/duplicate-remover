@@ -95,11 +95,12 @@ class DRToolbar(QToolBar):
         directory = QFileDialog.getExistingDirectory(
             self, caption="Select folder to scan", dir=HOME_DIR
         )
-        size = get_folder_size(directory)
-        date = friendly_date(os.stat(directory).st_ctime)
-        directory_record = dict(path=directory, size=size, date=date)
+        if directory is not None and len(directory) > 0:
+            size = get_folder_size(directory)
+            date = friendly_date(os.stat(directory).st_ctime)
+            directory_record = dict(path=directory, size=size, date=date)
 
-        self.signals.ADD_FOLDER.emit(directory_record)
+            self.signals.ADD_FOLDER.emit(directory_record)
 
     @Slot(dict)
     def scan_pressed(self):
