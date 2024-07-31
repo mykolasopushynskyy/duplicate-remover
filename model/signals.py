@@ -11,7 +11,7 @@ class AppSignals(QObject):
     SELECT_FOLDER_CHANGED = Signal(name="select_folder_pressed")
     SCAN_PRESSED = Signal(name="scan_duplicates_pressed")
     MERGE_PRESSED = Signal(name="merge_pressed")
-    STATUS_MESSAGE_SET = Signal(str, name="status_changed")
+    STATUS_MESSAGE_SET = Signal(str, int, name="status_changed")
     MERGE_FOLDER_CHANGED = Signal(str, name="merge_folder_change")
     FOLDERS_TO_SCAN_CHANGED = Signal(dict, name="folders_to_scan_changed")
     RESULTS_ARRIVED = Signal(list, name="results_arrived")

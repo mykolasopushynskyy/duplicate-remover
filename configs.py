@@ -9,9 +9,9 @@ from PySide6.QtCore import Slot
 from appdirs import user_config_dir
 from model.signals import AppSignals
 
-APP_NAME = "Duplicate Remover"
-
 PROJECT_DIR = os.path.dirname(__file__)
+
+APP_NAME = "Duplicate Remover"
 HOME_DIR = os.path.expanduser("~")
 ICONS_FONT_FILE_PATH = os.path.abspath(os.path.join(PROJECT_DIR, "assets", "icons.ttf"))
 APP_STYLE_FILE_PATH = os.path.abspath(os.path.join(PROJECT_DIR, "assets", "style.qss"))

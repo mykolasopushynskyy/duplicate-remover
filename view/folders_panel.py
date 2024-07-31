@@ -144,7 +144,7 @@ class FoldersList(QGroupBox):
     def remove_folder(self, list_widget, path):
         self.signals.REMOVE_FOLDER.emit(path)
         for i in range(0, list_widget.count()):
-            w = list_widget.itemWidget(list_widget.item(i))
-            if w is not None and w.path == path:
+            folder_widget = list_widget.itemWidget(list_widget.item(i))
+            if folder_widget is not None and folder_widget.path == path:
                 list_widget.takeItem(i)
                 self.paths.remove(path)

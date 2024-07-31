@@ -50,10 +50,9 @@ class ResultsList(QGroupBox):
             return
 
         duplicates = [
-            "\n".join([f" {i + 1:<3}: {value}" for i, value in enumerate(entries)])
-            + ("\n" if i < len(duplicates) - 1 else "")
+            "\n".join([f"{value}" for i, value in enumerate(entries)])
+            + ("\n" if i < len(duplicates) - 1 else "")  # skip last end line
             for i, entries in enumerate(duplicates)
-            if len(entries) > 1
         ]
 
         for i, blocks in enumerate(duplicates):

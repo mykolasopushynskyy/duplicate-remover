@@ -4,7 +4,7 @@ import sys
 
 from controller.controller import ApplicationController
 from configs import ConfigManager
-from controller.duplicate_scanner import DuplicateScanner
+from controller.ds_service import DuplicateScanner
 from model.model import ApplicationModel
 from model.signals import AppSignals
 
@@ -18,7 +18,7 @@ class DuplicateRemover:
         self.config = ConfigManager(self.signals)
         self.model = ApplicationModel(self.signals)
         self.view = DRQApplication(self.signals, sys.argv)
-        self.service = DuplicateScanner(self.signals, self.model)
+        self.service = DuplicateScanner(self.signals)
         self.controller = ApplicationController(self.signals, self.model, self.service)
 
     def load_application_state(self):

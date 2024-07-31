@@ -4,6 +4,7 @@ from PySide6.QtWidgets import (
     QWidget,
     QSizePolicy,
     QHBoxLayout,
+    QProgressBar,
 )
 
 import configs
@@ -47,7 +48,7 @@ class DRQMainWindow(QMainWindow):
 
         # window settings
         self.setWindowTitle("Duplicate Remover")
-        self.setMinimumSize(1000, 600)
+        self.setMinimumSize(1200, 800)
         # self.setUnifiedTitleAndToolBarOnMac(True)
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.PreventContextMenu)
         geometry = self.screen().availableGeometry()
@@ -69,8 +70,17 @@ class DRQMainWindow(QMainWindow):
         self.setCentralWidget(self.central_widget)
 
         # status bar
+        self.progressBar = QProgressBar()
+        self.progressBar.setAlignment(Qt.AlignmentFlag.AlignRight)
+        self.progressBar.setTextVisible(True)
+        self.progressBar.setMinimum(0)
+        self.progressBar.setMaximum(100)
+        self.progressBar.setMaximumSize(200, 20)
+        self.progressBar.hide()
+
         self.status = self.statusBar()
         self.status.showMessage(DEFAULT_STATUS_TEXT)
+        self.status.addPermanentWidget(self.progressBar)
 
         # load style
         with open(configs.APP_STYLE_FILE_PATH, "r") as file:
@@ -78,8 +88,14 @@ class DRQMainWindow(QMainWindow):
             self.setStyleSheet(style)
 
     @Slot(str)
-    def set_message(self, message):
+    def set_message(self, message, progress=0):
         if message is None or len(message) == 0:
             self.status.showMessage(DEFAULT_STATUS_TEXT)
         else:
             self.status.showMessage(message)
+
+        if progress > 0:
+            self.progressBar.show()
+            self.progressBar.setValue(progress)
+        else:
+            self.progressBar.hide()
