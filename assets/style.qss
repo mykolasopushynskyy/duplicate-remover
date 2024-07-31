@@ -1,25 +1,16 @@
-QTextEdit  {
-    border: none;
-    border-radius: 10px;
-
+QPlainTextEdit  {
+    border: 1px solid silver;
     font-size: 16;
     font-family: "Courier New", monospace;
 }
 
 QListWidget {
-    border: none;
-    border-radius: 10px;
+    border: 1px solid silver;
     background: white;
 }
 
 QListWidget::item:hover {
-    border-radius: 10px;
     background: rgb(240,240,240);
-}
-
-QListWidget::item:selected:hover {
-    border-radius: 10px;
-    background: white;
 }
 
 *[qss = "file_icon"] {

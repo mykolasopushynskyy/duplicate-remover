@@ -1,4 +1,5 @@
 from PySide6.QtCore import QObject, Signal
+from PySide6.QtGui import QTextBlockFormat
 
 
 class AppSignals(QObject):
@@ -13,6 +14,7 @@ class AppSignals(QObject):
     MERGE_FOLDER_CHANGED = Signal(str, name="merge_folder_change")
     FOLDERS_TO_SCAN_CHANGED = Signal(dict, name="folders_to_scan_changed")
     RESULTS_ARRIVED = Signal(list, name="results_arrived")
+    PRINT_RESULT_CHUNK = Signal(str, QTextBlockFormat, name="print_result_chunk")
     CONFIGS_CHANGE = Signal(dict, name="configs_change")
 
     def __init__(self):

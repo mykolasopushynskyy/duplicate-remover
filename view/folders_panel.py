@@ -108,7 +108,9 @@ class FoldersList(QGroupBox):
         self.list_widget.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
-        self.list_widget.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.list_widget.setHorizontalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOff
+        )
         self.list_widget.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
         self.layout.addWidget(self.list_widget)
 
