@@ -2,7 +2,6 @@ import operator
 import os
 import shutil
 from datetime import datetime, time
-from dateutil import parser
 
 import PIL
 from PIL import Image, ExifTags
@@ -12,9 +11,21 @@ from util.utils import get_hash, is_image_file, convert_size
 from timeit import default_timer as timer
 from pillow_heif import register_heif_opener
 
-EXIF_CREATION_TAG = 306
-
 register_heif_opener()
+
+EXIF_TAG = 0x8769
+EXIF_GENERATION_DATE_TAG = 0x9003
+EXIF_CREATION_DATE_TAG = 0x0132
+
+
+def get_exif_data(img_file: str):
+    with Image.open(img_file) as im:
+        exif = im.getexif()
+
+        exif_dict = dict(exif)
+        exif_dict.update(dict(exif.get_ifd(EXIF_TAG)))
+
+        return exif_dict
 
 
 def get_creation_year_exif(files):
@@ -29,11 +40,11 @@ def get_creation_year_exif(files):
 
     # get exif year
     try:
-        exif = Image.open(file).getexif()
-        if exif:
-            created_date_text = exif.get(EXIF_CREATION_TAG)
-            if created_date_text is not None and len(created_date_text) > 4:
-                return int(created_date_text[0:4])
+        exif_data = get_exif_data(file)
+        creation_time = exif_data.get(EXIF_CREATION_DATE_TAG, created_year)
+        generation_time = exif_data.get(EXIF_GENERATION_DATE_TAG, creation_time)
+        image_generation_time = str(generation_time)
+        return image_generation_time[0:4] if len(image_generation_time) > 4 else creation_time
     except PIL.UnidentifiedImageError:
         return created_year
 
@@ -201,14 +212,10 @@ class DuplicateScanner:
 if __name__ == "__main__":
     # get created year
 
-    filename = "test1.jpg"
-    created_year = datetime.fromtimestamp(os.stat(filename).st_atime).year
-    print(created_year)
-
-    exif_created_year = None
-    exif = Image.open(filename).getexif()
-    if exif:
-        text = exif.get(EXIF_CREATION_TAG)
-        exif_created_year = int(text[0:4] if len(text) > 4 else 0)
-
-    print(exif_created_year)
+    # filename = ["test.jpg", "test1.jpg", "test2.jpg", "test3.jpg", "test4.jpg", "test5.jpg", "test6.jpg", "test7.jpg"]
+    filename = ["test10.heic"]
+    for file in filename:
+        created_year = datetime.fromtimestamp(os.stat(file).st_atime).year
+        exif_data = get_exif_data(file)
+        exif_date = str(exif_data.get(EXIF_CREATION_DATE_TAG, created_year))[0:4]
+        print(f"{file} {exif_date}")
