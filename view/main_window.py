@@ -72,7 +72,6 @@ class DRQMainWindow(QMainWindow):
         # status bar
         self.progressBar = QProgressBar()
         self.progressBar.setAlignment(Qt.AlignmentFlag.AlignRight)
-        self.progressBar.setTextVisible(True)
         self.progressBar.setMinimum(0)
         self.progressBar.setMaximum(100)
         self.progressBar.setMaximumSize(200, 20)

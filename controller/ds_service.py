@@ -1,10 +1,9 @@
-import operator
 import os
 import shutil
-from datetime import datetime, time
+from datetime import datetime
 
 import PIL
-from PIL import Image, ExifTags
+from PIL import Image
 from model.model import ApplicationModel
 from model.signals import AppSignals
 from util.utils import get_hash, is_image_file, convert_size
@@ -16,37 +15,59 @@ register_heif_opener()
 EXIF_TAG = 0x8769
 EXIF_GENERATION_DATE_TAG = 0x9003
 EXIF_CREATION_DATE_TAG = 0x0132
+EXIF_DATE_FORMAT = "%Y:%m:%d %H:%M:%S"
 
 
 def get_exif_data(img_file: str):
-    with Image.open(img_file) as im:
-        exif = im.getexif()
+    try:
+        with Image.open(img_file) as im:
+            exif = im.getexif()
 
-        exif_dict = dict(exif)
-        exif_dict.update(dict(exif.get_ifd(EXIF_TAG)))
+            exif_dict = dict(exif)
+            exif_dict.update(dict(exif.get_ifd(EXIF_TAG)))
 
-        return exif_dict
+            return exif_dict
+    except PIL.UnidentifiedImageError:
+        return None
 
 
-def get_creation_year_exif(files):
+def read_exif_date(exif: dict, key: int, default_value: datetime = None):
+    if exif is None:
+        return default_value
+
+    date = str(exif.get(key))
+
+    try:
+        return datetime.strptime(date, EXIF_DATE_FORMAT)
+    except ValueError as e:
+        return default_value
+    except TypeError as e:
+        return default_value
+
+
+def get_min_creation_date_exif(files):
     # get created year
-    created_year, file = min(
-        [
-            (datetime.fromtimestamp(os.path.getctime(file)).year, file)
-            for file in files
-        ],
-        key=operator.itemgetter(1),
+    file = str(
+        min(
+            [file for file in files],
+            key=len,
+        )
     )
 
     # get exif year
-    try:
-        exif_data = get_exif_data(file)
-        creation_time = exif_data.get(EXIF_CREATION_DATE_TAG, created_year)
-        generation_time = exif_data.get(EXIF_GENERATION_DATE_TAG, creation_time)
-        image_generation_time = str(generation_time)
-        return image_generation_time[0:4] if len(image_generation_time) > 4 else creation_time
-    except PIL.UnidentifiedImageError:
-        return created_year
+    exif_data = get_exif_data(file)
+    file_created_date = datetime.fromtimestamp(os.stat(file).st_atime)
+    exif_creation_date = read_exif_date(exif_data, EXIF_CREATION_DATE_TAG)
+    exif_generation_date = read_exif_date(exif_data, EXIF_GENERATION_DATE_TAG)
+
+    return min(
+        [
+            date
+            for date in (file_created_date, exif_creation_date, exif_generation_date)
+            if (date is not None)
+        ],
+        key=lambda d: d.year,
+    )
 
 
 class DuplicateScanner:
@@ -174,7 +195,7 @@ class DuplicateScanner:
             old_file_path = str(min([file for file in files], key=len))
             old_file_dir, file_name = os.path.split(old_file_path)
 
-            creation_year = str(get_creation_year_exif(files))
+            creation_year = str(get_min_creation_date_exif(files).year)
 
             new_file_dir = os.path.abspath(
                 os.path.join(model.merge_folder, creation_year)
@@ -212,10 +233,44 @@ class DuplicateScanner:
 if __name__ == "__main__":
     # get created year
 
-    # filename = ["test.jpg", "test1.jpg", "test2.jpg", "test3.jpg", "test4.jpg", "test5.jpg", "test6.jpg", "test7.jpg"]
-    filename = ["test10.heic"]
+    filename = [
+        "test.jpg",
+        "test1.jpg",
+        "test2.jpg",
+        "test3.jpg",
+        "test4.jpg",
+        "test5.jpg",
+        "test6.jpg",
+        "test7.jpg",
+        "test10.heic",
+        "test11.jpg",
+        "/Users/mykola.sopushynskyi/asus_laptop_d/зустріч однокласників 09_05_2013/SNhApW_p8xo.jpg",
+    ]
+
     for file in filename:
-        created_year = datetime.fromtimestamp(os.stat(file).st_atime).year
         exif_data = get_exif_data(file)
-        exif_date = str(exif_data.get(EXIF_CREATION_DATE_TAG, created_year))[0:4]
-        print(f"{file} {exif_date}")
+        os_stat = os.stat(file)
+        file_st_a_time = datetime.fromtimestamp(os_stat.st_atime)
+        file_st_m_time = datetime.fromtimestamp(os_stat.st_mtime)
+        file_st_c_time = datetime.fromtimestamp(os_stat.st_ctime)
+        file_st_birth_time = datetime.fromtimestamp(os_stat.st_birthtime)
+        exif_creation_date = read_exif_date(exif_data, EXIF_CREATION_DATE_TAG)
+        exif_generation_date = read_exif_date(exif_data, EXIF_GENERATION_DATE_TAG)
+
+        date = min(
+            [
+                date
+                for date in (
+                    file_st_a_time,
+                    file_st_m_time,
+                    file_st_c_time,
+                    file_st_birth_time,
+                    exif_creation_date,
+                    exif_generation_date,
+                )
+                if (date is not None)
+            ],
+            key=lambda d: d.year,
+        )
+
+        print(f"{file} {date}")
