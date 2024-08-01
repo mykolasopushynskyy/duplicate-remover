@@ -45,7 +45,7 @@ def read_exif_date(exif: dict, key: int, default_value: datetime = None):
         return default_value
 
 
-def get_min_creation_date_exif(files):
+def get_min_creation_date(files):
     # get created year
     file = str(
         min(
@@ -54,16 +54,28 @@ def get_min_creation_date_exif(files):
         )
     )
 
-    # get exif year
+    # get all file dates
     exif_data = get_exif_data(file)
-    file_created_date = datetime.fromtimestamp(os.stat(file).st_atime)
+    os_stat = os.stat(file)
+
+    file_st_a_time = datetime.fromtimestamp(os_stat.st_atime)
+    file_st_m_time = datetime.fromtimestamp(os_stat.st_mtime)
+    file_st_c_time = datetime.fromtimestamp(os_stat.st_ctime)
+    file_st_birth_time = datetime.fromtimestamp(os_stat.st_birthtime)
     exif_creation_date = read_exif_date(exif_data, EXIF_CREATION_DATE_TAG)
     exif_generation_date = read_exif_date(exif_data, EXIF_GENERATION_DATE_TAG)
 
     return min(
         [
             date
-            for date in (file_created_date, exif_creation_date, exif_generation_date)
+            for date in (
+                            file_st_a_time,
+                            file_st_m_time,
+                            file_st_c_time,
+                            file_st_birth_time,
+                            exif_creation_date,
+                            exif_generation_date
+                        )
             if (date is not None)
         ],
         key=lambda d: d.year,
@@ -195,14 +207,15 @@ class DuplicateScanner:
             old_file_path = str(min([file for file in files], key=len))
             old_file_dir, file_name = os.path.split(old_file_path)
 
-            creation_year = str(get_min_creation_date_exif(files).year)
+            creation_date = get_min_creation_date(files)
 
             new_file_dir = os.path.abspath(
-                os.path.join(model.merge_folder, creation_year)
+                os.path.join(model.merge_folder, str(creation_date.year))
             )
             new_file_path = os.path.abspath(os.path.join(new_file_dir, file_name))
 
             os.makedirs(new_file_dir, exist_ok=True)
+            # TODO Copy wth saving all image dates
             shutil.copy(old_file_path, new_file_path)
             action += 1
             self.update_merge_status(new_file_path, "created", action, actions)
@@ -229,48 +242,47 @@ class DuplicateScanner:
         progress = 0 if (value == 0 or max_value == 0) else int(value / max_value * 100)
         self.signals.STATUS_MESSAGE_SET.emit(message, progress)
 
-
-if __name__ == "__main__":
-    # get created year
-
-    filename = [
-        "test.jpg",
-        "test1.jpg",
-        "test2.jpg",
-        "test3.jpg",
-        "test4.jpg",
-        "test5.jpg",
-        "test6.jpg",
-        "test7.jpg",
-        "test10.heic",
-        "test11.jpg",
-        "/Users/mykola.sopushynskyi/asus_laptop_d/зустріч однокласників 09_05_2013/SNhApW_p8xo.jpg",
-    ]
-
-    for file in filename:
-        exif_data = get_exif_data(file)
-        os_stat = os.stat(file)
-        file_st_a_time = datetime.fromtimestamp(os_stat.st_atime)
-        file_st_m_time = datetime.fromtimestamp(os_stat.st_mtime)
-        file_st_c_time = datetime.fromtimestamp(os_stat.st_ctime)
-        file_st_birth_time = datetime.fromtimestamp(os_stat.st_birthtime)
-        exif_creation_date = read_exif_date(exif_data, EXIF_CREATION_DATE_TAG)
-        exif_generation_date = read_exif_date(exif_data, EXIF_GENERATION_DATE_TAG)
-
-        date = min(
-            [
-                date
-                for date in (
-                    file_st_a_time,
-                    file_st_m_time,
-                    file_st_c_time,
-                    file_st_birth_time,
-                    exif_creation_date,
-                    exif_generation_date,
-                )
-                if (date is not None)
-            ],
-            key=lambda d: d.year,
-        )
-
-        print(f"{file} {date}")
+#
+# if __name__ == "__main__":
+#     # get created year
+#
+#     filename = [
+#         "test.jpg",
+#         "test1.jpg",
+#         "test2.jpg",
+#         "test3.jpg",
+#         "test4.jpg",
+#         "test5.jpg",
+#         "test6.jpg",
+#         "test7.jpg",
+#         "test10.heic",
+#         "test11.jpg",
+#     ]
+#
+#     for file in filename:
+#         exif_data = get_exif_data(file)
+#         os_stat = os.stat(file)
+#         file_st_a_time = datetime.fromtimestamp(os_stat.st_atime)
+#         file_st_m_time = datetime.fromtimestamp(os_stat.st_mtime)
+#         file_st_c_time = datetime.fromtimestamp(os_stat.st_ctime)
+#         file_st_birth_time = datetime.fromtimestamp(os_stat.st_birthtime)
+#         exif_creation_date = read_exif_date(exif_data, EXIF_CREATION_DATE_TAG)
+#         exif_generation_date = read_exif_date(exif_data, EXIF_GENERATION_DATE_TAG)
+#
+#         date = min(
+#             [
+#                 date
+#                 for date in (
+#                     file_st_a_time,
+#                     file_st_m_time,
+#                     file_st_c_time,
+#                     file_st_birth_time,
+#                     exif_creation_date,
+#                     exif_generation_date,
+#                 )
+#                 if (date is not None)
+#             ],
+#             key=lambda d: d.year,
+#         )
+#
+#         print(f"{file} {date}")
