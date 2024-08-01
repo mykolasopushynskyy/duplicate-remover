@@ -4,9 +4,20 @@ import os
 import threading
 from datetime import datetime
 
+import PIL
+from PIL import Image
+from pillow_heif import register_heif_opener
+
+register_heif_opener()
+
+
 # Define a tuple with common image file extensions
 IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".heic")
 HOME = os.path.expanduser("~")
+EXIF_TAG = 0x8769
+EXIF_GENERATION_DATE_TAG = 0x9003
+EXIF_CREATION_DATE_TAG = 0x0132
+EXIF_DATE_FORMAT = "%Y:%m:%d %H:%M:%S"
 
 
 def short_path(abs_path: str):
@@ -113,3 +124,67 @@ def is_image_file(filename):
         bool: True if the file is an image, False otherwise.
     """
     return filename.lower().endswith(IMAGE_EXTENSIONS)
+
+
+def get_exif_data(img_file: str):
+    try:
+        with Image.open(img_file) as im:
+            exif = im.getexif()
+
+            exif_dict = dict(exif)
+            exif_dict.update(dict(exif.get_ifd(EXIF_TAG)))
+
+            return exif_dict
+    except PIL.UnidentifiedImageError:
+        return None
+
+
+def read_exif_date(exif: dict, key: int, default_value: datetime = None):
+    if exif is None:
+        return default_value
+
+    date = str(exif.get(key))
+
+    try:
+        return datetime.strptime(date, EXIF_DATE_FORMAT)
+    except ValueError as e:
+        return default_value
+    except TypeError as e:
+        return default_value
+
+
+def get_min_creation_date(files):
+    # get created year
+    file = str(
+        min(
+            [file for file in files],
+            key=len,
+        )
+    )
+
+    # get all file dates
+    exif_data = get_exif_data(file)
+    os_stat = os.stat(file)
+
+    file_st_a_time = datetime.fromtimestamp(os_stat.st_atime)
+    file_st_m_time = datetime.fromtimestamp(os_stat.st_mtime)
+    file_st_c_time = datetime.fromtimestamp(os_stat.st_ctime)
+    file_st_b_time = datetime.fromtimestamp(os_stat.st_birthtime)
+    exif_creation_date = read_exif_date(exif_data, EXIF_CREATION_DATE_TAG)
+    exif_generation_date = read_exif_date(exif_data, EXIF_GENERATION_DATE_TAG)
+
+    return min(
+        [
+            date
+            for date in (
+                file_st_a_time,
+                file_st_m_time,
+                file_st_c_time,
+                file_st_b_time,
+                exif_creation_date,
+                exif_generation_date,
+            )
+            if (date is not None)
+        ],
+        key=lambda d: d.year,
+    )
