@@ -1,6 +1,7 @@
 import functools
 import hashlib
 import os
+import re
 import threading
 from datetime import datetime
 
@@ -18,6 +19,27 @@ EXIF_TAG = 0x8769
 EXIF_GENERATION_DATE_TAG = 0x9003
 EXIF_CREATION_DATE_TAG = 0x0132
 EXIF_DATE_FORMAT = "%Y:%m:%d %H:%M:%S"
+CAMERAS_FILE_NAMING_PATTERNS = (
+    # IMG_YYYYMMDD_HHMMSS.jpg or PANO_YYYYMMDD_HHMMSS.jpg or YYYYMMDD_HHMMSS.jpg
+    (
+        r"(\d{8})_(\d{6})",
+        ["%Y%m%d%H%M%S", "%m%d%Y%H%M%S"],
+    ),  # Common in smartphones and digital cameras
+    # IMG_YYYYMMDD_HHMM.jpg or PANO_YYYYMMDD_HHMM.jpg or YYYYMMDD_HHMM.jpg (without seconds)
+    (r"(\d{8})_(\d{4})", ["%Y%m%d%H%M"]),
+    # YYYY_MM_DD_HH_MM_SS_mmm.jpg (some smartphones, action cameras)
+    (r"(\d{4})_(\d{2})_(\d{2})_(\d{2})_(\d{2})_(\d{2})", ["%Y%m%d%H%M%S"]),
+    # WP_YYYYMMDD_HHMMSS_Pro.jpg (Windows Phone)
+    (r"(\d{8})_(\d{2})_(\d{2})_(\d{2})", ["%Y%m%d%H%M%S"]),
+    # MMDDYYYYHHMMSS.jpg (some specialized cameras)
+    (r"(\d{14})", ["%Y%m%d%H%M%S", "%m%d%Y%H%M%S"]),
+    # YYYYMMDDHHMMSS.jpg (various digital cameras)
+    (r"(\d{12})", ["%Y%m%d%H%M", "%m%d%Y%H%M"]),
+    # YYYY-MM-DD description.jpg (some digital cameras, software)
+    (r"(\d{4})-(\d{2})-(\d{2})", ["%Y%m%d"]),
+    # MMDDYY_HHMM.jpg (some specialized cameras)
+    (r"(\d{6})_(\d{4})", ["%m%d%y%H%M"]),
+)
 
 
 def short_path(abs_path: str):
@@ -33,7 +55,7 @@ def get_folder_size(path):
     Args:
         path (str): The path of the directory.
     Returns:
-        str: The total size in a human-readable format or 'unknown' if the path is not found.
+        str: The total size in a human-readable format or "unknown" if the path is not found.
     """
     total_size = 0
     try:
@@ -108,7 +130,7 @@ def get_hash(filename, quick_hash=False, chunk_size=1024, hash_alg=hashlib.sha1)
         end_chunk = file_object.read(chunk_size)
         hasher.update(end_chunk)
     else:
-        for chunk in chunk_reader(file_object):
+        for chunk in chunk_reader(file_object, chunk_size):
             hasher.update(chunk)
 
     file_object.close()
@@ -139,11 +161,11 @@ def get_exif_data(img_file: str):
         return None
 
 
-def read_exif_date(exif: dict, key: int, default_value: datetime = None):
+def read_exif_date(exif: dict, date_key: int, default_value: datetime = None):
     if exif is None:
         return default_value
 
-    date = str(exif.get(key))
+    date = str(exif.get(date_key))
 
     try:
         return datetime.strptime(date, EXIF_DATE_FORMAT)
@@ -166,10 +188,11 @@ def get_min_creation_date(files):
     exif_data = get_exif_data(file)
     os_stat = os.stat(file)
 
-    file_st_a_time = datetime.fromtimestamp(os_stat.st_atime)
-    file_st_m_time = datetime.fromtimestamp(os_stat.st_mtime)
-    file_st_c_time = datetime.fromtimestamp(os_stat.st_ctime)
-    file_st_b_time = datetime.fromtimestamp(os_stat.st_birthtime)
+    file_name_dt = extract_datetime_from_filename(file)
+    file_st_a_dt = datetime.fromtimestamp(os_stat.st_atime)
+    file_st_m_dt = datetime.fromtimestamp(os_stat.st_mtime)
+    file_st_c_dt = datetime.fromtimestamp(os_stat.st_ctime)
+    file_st_b_dt = datetime.fromtimestamp(os_stat.st_birthtime)
     exif_creation_date = read_exif_date(exif_data, EXIF_CREATION_DATE_TAG)
     exif_generation_date = read_exif_date(exif_data, EXIF_GENERATION_DATE_TAG)
 
@@ -177,10 +200,11 @@ def get_min_creation_date(files):
         [
             date
             for date in (
-                file_st_a_time,
-                file_st_m_time,
-                file_st_c_time,
-                file_st_b_time,
+                file_name_dt,
+                file_st_a_dt,
+                file_st_m_dt,
+                file_st_c_dt,
+                file_st_b_dt,
                 exif_creation_date,
                 exif_generation_date,
             )
@@ -188,3 +212,24 @@ def get_min_creation_date(files):
         ],
         key=lambda d: d.year,
     )
+
+
+def extract_datetime_from_filename(filename):
+
+    for pattern, date_formats in CAMERAS_FILE_NAMING_PATTERNS:
+        match = re.search(pattern, filename)
+        if match is None:
+            continue
+
+        datetime_str = "".join(match.groups())
+
+        for date_format in date_formats:
+            try:
+                parsed_datetime = datetime.strptime(datetime_str, date_format)
+                if 1970 <= parsed_datetime.year <= datetime.now().year:
+                    return parsed_datetime
+                continue
+            except ValueError:
+                continue  # Continue to the next pattern if the current one fails to parse
+
+    return None

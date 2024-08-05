@@ -144,13 +144,13 @@ class DuplicateScanner:
 
             os.makedirs(new_file_dir, exist_ok=True)
 
-            # TODO Copy wth saving all image dates
-            shutil.copy(old_file_path, new_file_path)
+            shutil.copy2(old_file_path, new_file_path)
 
             action += 1
             self.update_merge_status(new_file_path, "created", action, actions)
 
             for file in files:
+                # TODO add actual delete
                 print(f"delete {file}\n")
                 action += 1
                 self.update_merge_status(file, "deleted", action, actions)

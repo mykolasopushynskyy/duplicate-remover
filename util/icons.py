@@ -8,15 +8,15 @@ FOLDER_SYM = "\uf114"
 FOLDER_OPEN_SYM = "\uF115"
 MINUS_SYM = "\ue800"
 PLUS_SYM = "\ue801"
-RUN_SYM = "\ue802"
+SEARCH_SYM = "\ue802"
 CLOSE_SYM = "\ue805"
-SPINNER_SYM = "\ue838"
-PICTURE_FILE_SYM = "\uF1C5"
-UNSPECIFIED_FILE_SYM = "\uE803"
-TEXT_FILE_SYM = "\uF0F6"
 CONFIGS_SYM = "\uE804"
-FILES_SYM = "\uF0C5"
 MERGE_SYM = "\uF1D9"
+PICTURE_FILE_SYM = "\uF1C5"
+SYSTEM_SYM = "\uE803"
+CALENDAR_SYM = "\uE808"
+EDIT_SYM = "\uE80A"
+ADJUST_SYM = "\uE809"
 
 
 def get_icon(symbol: str, font_size: int, font_color: tuple):
@@ -64,16 +64,12 @@ def plus(size=16, color=(80, 76, 74)):
     return get_icon(PLUS_SYM, size, color)
 
 
-def run(size=16, color=(50, 150, 50)):
-    return get_icon(RUN_SYM, size, color)
+def search(size=16, color=(50, 150, 50)):
+    return get_icon(SEARCH_SYM, size, color)
 
 
 def close(size=16, color=(50, 150, 50)):
     return get_icon(CLOSE_SYM, size, color)
-
-
-def spinner(size=16, color=(80, 76, 74)):
-    return get_icon(SPINNER_SYM, size, color)
 
 
 def configs(size=16, color=(80, 76, 74)):
@@ -86,3 +82,23 @@ def open_folder(size=16, color=(183, 143, 60)):
 
 def merge(size=16, color=(50, 150, 50)):
     return get_icon(MERGE_SYM, size, color)
+
+
+def picture_file(size=16, color=(50, 150, 50)):
+    return get_icon(PICTURE_FILE_SYM, size, color)
+
+
+def system(size=16, color=(50, 150, 50)):
+    return get_icon(SYSTEM_SYM, size, color)
+
+
+def calender(size=16, color=(50, 150, 50)):
+    return get_icon(CALENDAR_SYM, size, color)
+
+
+def edit(size=16, color=(50, 150, 50)):
+    return get_icon(EDIT_SYM, size, color)
+
+
+def adjust(size=16, color=(50, 150, 50)):
+    return get_icon(ADJUST_SYM, size, color)

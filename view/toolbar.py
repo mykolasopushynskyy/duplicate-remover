@@ -14,6 +14,7 @@ from configs import HOME_DIR
 from model.signals import AppSignals
 from util import icons
 from util.utils import get_folder_size, friendly_date
+from view.settings_window import SettingsWindow
 
 
 class DRToolbar(QToolBar):
@@ -28,10 +29,13 @@ class DRToolbar(QToolBar):
         self.setAllowedAreas(Qt.ToolBarArea.TopToolBarArea)
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
 
+        # settings window
+        self.settings = SettingsWindow(self.signals)
+
         # Add folder button
-        self.add_folder = QAction(icon=icons.plus(size=20), text="Add folder")
-        self.add_folder.triggered.connect(self.add_scan_folder)
-        self.addAction(self.add_folder)
+        self.add_folder_btn = QAction(icon=icons.plus(size=20), text="Add folder")
+        self.add_folder_btn.triggered.connect(self.add_scan_folder)
+        self.addAction(self.add_folder_btn)
 
         # Spacer
         self.spacer_1 = QWidget(self)
@@ -43,23 +47,23 @@ class DRToolbar(QToolBar):
         self.addWidget(self.spacer_1)
 
         # Search duplicates
-        self.search_duplicates = QAction(icon=icons.run(size=20), text="Run search")
-        self.search_duplicates.triggered.connect(self.scan_pressed)
-        self.addAction(self.search_duplicates)
+        self.search_duplicates_btn = QAction(icon=icons.search(size=20), text="Run search")
+        self.search_duplicates_btn.triggered.connect(self.scan_pressed)
+        self.addAction(self.search_duplicates_btn)
 
         # Merge duplicates
-        self.merge_duplicates = QAction(
+        self.merge_duplicates_btn = QAction(
             icon=icons.merge(size=20), text="Merge duplicates"
         )
-        self.merge_duplicates.triggered.connect(self.merge_pressed)
-        self.addAction(self.merge_duplicates)
+        self.merge_duplicates_btn.triggered.connect(self.merge_pressed)
+        self.addAction(self.merge_duplicates_btn)
 
         # Select folder button
-        self.destination_folder = QAction(
+        self.destination_folder_btn = QAction(
             icon=icons.open_folder(size=20), text="Destination folder"
         )
-        self.destination_folder.triggered.connect(self.select_destination_folder)
-        self.addAction(self.destination_folder)
+        self.destination_folder_btn.triggered.connect(self.select_destination_folder)
+        self.addAction(self.destination_folder_btn)
 
         # Select folder label
         self.destination_folder_label = QLabel(text="Folder address")
@@ -78,9 +82,9 @@ class DRToolbar(QToolBar):
         self.addWidget(self.spacer_2)
 
         # Settings button
-        self.settings = QAction(icon=icons.configs(size=20), text="Settings")
-        self.settings.triggered.connect(lambda: print("Settings"))
-        self.addAction(self.settings)
+        self.settings_btn = QAction(icon=icons.configs(size=20), text="Settings")
+        self.settings_btn.triggered.connect(self.settings_pressed)
+        self.addAction(self.settings_btn)
 
     @Slot(dict)
     def merge_folder_loaded(self, configs: dict):
@@ -116,3 +120,10 @@ class DRToolbar(QToolBar):
     @Slot()
     def merge_pressed(self):
         self.signals.MERGE_PRESSED.emit()
+
+    @Slot()
+    def settings_pressed(self):
+        if self.settings.isVisible():
+            self.settings.hide()
+        else:
+            self.settings.show()

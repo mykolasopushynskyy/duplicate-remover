@@ -82,7 +82,7 @@ class DRQMainWindow(QMainWindow):
         self.status.addPermanentWidget(self.progressBar)
 
         # load style
-        with open(configs.APP_STYLE_FILE_PATH, "r") as file:
+        with open(configs.MAIN_WINDOW_STYLE, "r") as file:
             style = file.read()
             self.setStyleSheet(style)
 
