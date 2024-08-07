@@ -22,26 +22,22 @@ class ApplicationController:
         self.service = service
 
         # subscribe to events bindings
-        self.signals.ADD_FOLDER.connect(self.add_folder)
-        self.signals.REMOVE_FOLDER.connect(self.remove_folder)
+        self.signals.ADD_FOLDER_PRESSED.connect(self.add_folder)
+        self.signals.REMOVE_FOLDER_PRESSED.connect(self.remove_folder)
         self.signals.SCAN_PRESSED.connect(self.scan)
         self.signals.MERGE_PRESSED.connect(self.merge_images)
 
-    # @threaded
     @Slot(None)
     def add_folder(self, directory_record):
-
         # TODO make sure we dont add subfolders of folder to scan
         # TODO Consider to add validators for this
         self.model.add_folder_to_scan(directory_record)
-        self.signals.FOLDERS_TO_SCAN_CHANGED.emit(self.model.folders_to_scan)
-        self.signals.CONFIGS_CHANGE.emit(self.model.folders_to_scan)
+        self.signals.CONFIGS_CHANGE.emit(self.model.to_configs())
 
     @Slot(str)
     def remove_folder(self, path):
         self.model.remove_folder_to_scan(path)
-        self.signals.FOLDERS_TO_SCAN_CHANGED.emit(self.model.folders_to_scan)
-        self.signals.CONFIGS_CHANGE.emit(self.model.folders_to_scan)
+        self.signals.CONFIGS_CHANGE.emit(self.model.to_configs())
 
     # @threaded
     @Slot(None)

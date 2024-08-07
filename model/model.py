@@ -9,7 +9,7 @@ class ApplicationModel:
         # model data
         self.merge_folder = ""
         self.folders_to_scan = {}
-        self.duplicates = None
+        self.duplicates = []
         # TODO Add folders to skip in search
         # TODO Add some predefined folders to skip like system dirs, etc.
 

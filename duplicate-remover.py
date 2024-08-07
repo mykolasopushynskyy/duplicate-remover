@@ -15,20 +15,15 @@ class DuplicateRemover:
     def __init__(self):
         super().__init__()
         self.signals = AppSignals()
-        self.config = ConfigManager(self.signals)
+        self.config_manager = ConfigManager(self.signals)
         self.model = ApplicationModel(self.signals)
         self.view = DRQApplication(self.signals, sys.argv)
-        self.service = DuplicateScanner(self.signals)
+        self.service = DuplicateScanner(self.signals, self.config_manager)
         self.controller = ApplicationController(self.signals, self.model, self.service)
 
     def load_application_state(self):
         # publish data from settings
-        self.signals.MODEL_LOAD.emit(
-            dict(
-                merge_folder=self.config.get("merge_folder", default=""),
-                folders_to_scan=self.config.get("folders_to_scan", default={}),
-            )
-        )
+        self.signals.MODEL_LOAD.emit(self.config_manager.configs)
 
     def start(self):
         self.load_application_state()

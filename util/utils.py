@@ -13,7 +13,6 @@ register_heif_opener()
 
 
 # Define a tuple with common image file extensions
-IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".heic")
 HOME = os.path.expanduser("~")
 EXIF_TAG = 0x8769
 EXIF_GENERATION_DATE_TAG = 0x9003
@@ -137,17 +136,6 @@ def get_hash(filename, quick_hash=False, chunk_size=1024, hash_alg=hashlib.sha1)
     return hasher.digest()
 
 
-def is_image_file(filename):
-    """
-    Check if a file is an image based on its extension.
-    Args:
-        filename (str): The name of the file to check.
-    Returns:
-        bool: True if the file is an image, False otherwise.
-    """
-    return filename.lower().endswith(IMAGE_EXTENSIONS)
-
-
 def get_exif_data(img_file: str):
     try:
         with Image.open(img_file) as im:
@@ -175,7 +163,7 @@ def read_exif_date(exif: dict, date_key: int, default_value: datetime = None):
         return default_value
 
 
-def get_min_creation_date(files):
+def get_min_image_date(files):
     # get created year
     file = str(
         min(

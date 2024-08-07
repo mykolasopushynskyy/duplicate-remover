@@ -1,9 +1,11 @@
 import os
+import platform
 import shutil
 
+from configs import ConfigManager, EXTENSIONS_TO_SCAN
 from model.model import ApplicationModel
 from model.signals import AppSignals
-from util.utils import get_hash, is_image_file, convert_size, get_min_creation_date
+from util.utils import get_hash, convert_size, get_min_image_date
 from timeit import default_timer as timer
 from pillow_heif import register_heif_opener
 
@@ -11,8 +13,9 @@ register_heif_opener()
 
 
 class DuplicateScanner:
-    def __init__(self, signals: AppSignals):
+    def __init__(self, signals: AppSignals, configs: ConfigManager):
         self.signals = signals
+        self.configs = configs
 
     # TODO Implement proper error handling for file scanning
     def scan_for_duplicates(self, model: ApplicationModel):
@@ -27,19 +30,20 @@ class DuplicateScanner:
         files_checked_v2 = 0
         files_checked_v3 = 0
 
-        skip_dir = model.merge_folder
+        platform.system()
+        skip_dirs = model.merge_folder
 
         start = timer()
         # form level one dict with keys of file size
         for directory in model.folders_to_scan.keys():
             for root, dirs, files in os.walk(directory):
-                if root == skip_dir:
+                if root == skip_dirs:
                     continue
 
                 files = [
                     os.path.abspath(os.path.join(root, file))
                     for file in files
-                    if is_image_file(file)
+                    if file.lower().endswith(self.configs.get(EXTENSIONS_TO_SCAN))
                 ]
 
                 for file in files:
@@ -135,7 +139,7 @@ class DuplicateScanner:
             old_file_path = str(min([file for file in files], key=len))
             old_file_dir, file_name = os.path.split(old_file_path)
 
-            creation_date = get_min_creation_date(files)
+            creation_date = get_min_image_date(files)
 
             new_file_dir = os.path.abspath(
                 os.path.join(model.merge_folder, str(creation_date.year))

@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (
     QFileDialog,
 )
 
-from configs import HOME_DIR
+from configs import HOME_DIR, MERGE_FOLDER
 from model.signals import AppSignals
 from util import icons
 from util.utils import get_folder_size, friendly_date
@@ -22,7 +22,7 @@ class DRToolbar(QToolBar):
         QToolBar.__init__(self)
         self.signals = signals
         self.signals.MODEL_LOAD.connect(self.merge_folder_loaded)
-        self.signals.MERGE_FOLDER_CHANGED.connect(self.merge_folder_changed)
+        self.signals.CONFIGS_CHANGE.connect(self.merge_folder_loaded)
 
         # Toolbar properties
         self.setMovable(False)
@@ -47,7 +47,9 @@ class DRToolbar(QToolBar):
         self.addWidget(self.spacer_1)
 
         # Search duplicates
-        self.search_duplicates_btn = QAction(icon=icons.search(size=20), text="Run search")
+        self.search_duplicates_btn = QAction(
+            icon=icons.search(size=20), text="Run search"
+        )
         self.search_duplicates_btn.triggered.connect(self.scan_pressed)
         self.addAction(self.search_duplicates_btn)
 
@@ -87,19 +89,16 @@ class DRToolbar(QToolBar):
         self.addAction(self.settings_btn)
 
     @Slot(dict)
-    def merge_folder_loaded(self, configs: dict):
-        self.destination_folder_label.setText(configs["merge_folder"])
-
-    @Slot(dict)
-    def merge_folder_changed(self, directory: str):
-        self.destination_folder_label.setText(directory)
+    def merge_folder_loaded(self, cfg: dict):
+        self.destination_folder_label.setText(cfg[MERGE_FOLDER])
 
     @Slot(dict)
     def select_destination_folder(self):
         directory = QFileDialog.getExistingDirectory(
             self, caption="Select destination directory", dir=HOME_DIR
         )
-        self.signals.MERGE_FOLDER_CHANGED.emit(directory)
+        value = {MERGE_FOLDER: directory}
+        self.signals.CONFIGS_CHANGE.emit(value)
 
     @Slot(dict)
     def add_scan_folder(self):
@@ -111,7 +110,7 @@ class DRToolbar(QToolBar):
             date = friendly_date(os.stat(directory).st_ctime)
             directory_record = dict(path=directory, size=size, date=date)
 
-            self.signals.ADD_FOLDER.emit(directory_record)
+            self.signals.ADD_FOLDER_PRESSED.emit(directory_record)
 
     @Slot()
     def scan_pressed(self):
