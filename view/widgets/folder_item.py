@@ -37,7 +37,7 @@ class FolderItem(QWidget):
         self.v_btn_layout = QVBoxLayout()
 
         self.image = QLabel()
-        folder = icons.folder(size=40, color=(244, 191, 79))
+        folder = icons.open_folder(size=40, color=(244, 191, 79))
         self.image.setProperty("qss", "file_icon")
         self.image.setPixmap(folder.pixmap(folder.availableSizes()[0]))
         self.image.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
@@ -71,7 +71,7 @@ class FolderItem(QWidget):
         self.h_layout.addLayout(self.v_label_layout, 1)
 
         self.remove_button = QPushButton(
-            icon=icons.close(size=20, color=(237, 106, 94))
+            icon=icons.trash_bin(size=20, color=(150, 53, 47))
         )
         self.remove_button.setFixedWidth(20)
         self.remove_button.setSizePolicy(

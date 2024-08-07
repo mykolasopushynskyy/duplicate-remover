@@ -1,39 +1,47 @@
-from PySide6.QtCore import Slot
+import os
+import platform
 
+from configs import (
+    ConfigManager,
+    CONFIG_FILE_NAME,
+    SYSTEM_FOLDERS_TO_SKIP,
+    MERGE_FOLDER,
+    FOLDERS_TO_SCAN,
+    EXTENSIONS_TO_SCAN,
+    PARSE_DATE_FROM_FILENAME,
+)
 from model.signals import AppSignals
 
 
-class ApplicationModel:
+class ApplicationModel(ConfigManager):
 
-    def __init__(self, signals: AppSignals):
+    def __init__(self, signals: AppSignals, config_file: str = CONFIG_FILE_NAME):
+        ConfigManager.__init__(self, signals, config_file)
         # model data
-        self.merge_folder = ""
-        self.folders_to_scan = {}
         self.duplicates = []
         # TODO Add folders to skip in search
-        # TODO Add some predefined folders to skip like system dirs, etc.
-
-        # subscribe for config change
-        signals.MODEL_LOAD.connect(self.from_configs)
-
-    @Slot(dict)
-    def from_configs(self, configs: dict):
-        self.merge_folder = configs["merge_folder"]
-        self.folders_to_scan = configs["folders_to_scan"]
-
-    def to_configs(self):
-        return dict(
-            merge_folder=self.merge_folder, folders_to_scan=self.folders_to_scan
-        )
-
-    def set_merge_folder(self, path):
-        self.merge_folder = path
-
-    def add_folder_to_scan(self, record: dict):
-        self.folders_to_scan[record["path"]] = record
-
-    def remove_folder_to_scan(self, path):
-        self.folders_to_scan.pop(path)
 
     def set_duplicates(self, duplicates):
         self.duplicates = duplicates
+
+    def folders_to_scan(self):
+        return self.get(FOLDERS_TO_SCAN)
+
+    def merge_folder(self):
+        return self.get(MERGE_FOLDER)
+
+    def extensions_to_scan(self):
+        return tuple(self.get(EXTENSIONS_TO_SCAN).split(" "))
+
+    def pase_filename(self):
+        return self.get(PARSE_DATE_FROM_FILENAME)
+
+    def get_system_folders_to_skip(self):
+        system = platform.system()
+        if platform == "Windows":
+            sys_drive = os.getenv("SystemDrive")
+            return [
+                sys_drive + value for value in self.get(SYSTEM_FOLDERS_TO_SKIP)[system]
+            ]
+        else:
+            return self.get(SYSTEM_FOLDERS_TO_SKIP)[system]

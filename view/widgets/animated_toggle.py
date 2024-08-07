@@ -23,10 +23,8 @@ class AnimatedToggle(QCheckBox):
         self,
         parent=None,
         bar_color=Qt.GlobalColor.gray,
-        checked_color="#00B0FF",
+        checked_color="#3d82f7",
         handle_color=Qt.GlobalColor.white,
-        pulse_unchecked_color="#44999999",
-        pulse_checked_color="#4400B0EE",
     ):
         super().__init__(parent)
 
@@ -37,9 +35,6 @@ class AnimatedToggle(QCheckBox):
 
         self._handle_brush = QBrush(handle_color)
         self._handle_checked_brush = QBrush(QColor(checked_color))
-
-        self._pulse_unchecked_animation = QBrush(QColor(pulse_unchecked_color))
-        self._pulse_checked_animation = QBrush(QColor(pulse_checked_color))
 
         # Setup the rest of the widget.
         self.setContentsMargins(8, 0, 8, 0)

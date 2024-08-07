@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (
 from configs import HOME_DIR, MERGE_FOLDER
 from model.signals import AppSignals
 from util import icons
-from util.utils import get_folder_size, friendly_date
+from util.utils import get_folder_size, friendly_date, do_if_present, short_path
 from view.settings_window import SettingsWindow
 
 
@@ -21,8 +21,8 @@ class DRToolbar(QToolBar):
     def __init__(self, signals: AppSignals):
         QToolBar.__init__(self)
         self.signals = signals
-        self.signals.MODEL_LOAD.connect(self.merge_folder_loaded)
-        self.signals.CONFIGS_CHANGE.connect(self.merge_folder_loaded)
+        self.signals.CONFIGS_LOAD.connect(self.set_merge_folder)
+        self.signals.CONFIGS_CHANGE.connect(self.set_merge_folder)
 
         # Toolbar properties
         self.setMovable(False)
@@ -37,32 +37,34 @@ class DRToolbar(QToolBar):
         self.add_folder_btn.triggered.connect(self.add_scan_folder)
         self.addAction(self.add_folder_btn)
 
+        self.exclude_folder_btn = QAction(
+            icon=icons.minus(size=20), text="Exclude folder"
+        )
+        self.exclude_folder_btn.triggered.connect(self.add_scan_folder)
+        self.addAction(self.exclude_folder_btn)
+
         # Spacer
         self.spacer_1 = QWidget(self)
         self.spacer_1.setSizePolicy(
             QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred
         )
-        self.spacer_1.setFixedWidth(370)
+        self.spacer_1.setFixedWidth(325)
         self.spacer_1.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         self.addWidget(self.spacer_1)
 
         # Search duplicates
-        self.search_duplicates_btn = QAction(
-            icon=icons.search(size=20), text="Run search"
-        )
+        self.search_duplicates_btn = QAction(icon=icons.search(size=20), text="Search")
         self.search_duplicates_btn.triggered.connect(self.scan_pressed)
         self.addAction(self.search_duplicates_btn)
 
         # Merge duplicates
-        self.merge_duplicates_btn = QAction(
-            icon=icons.merge(size=20), text="Merge duplicates"
-        )
+        self.merge_duplicates_btn = QAction(icon=icons.picture(size=20), text="Merge")
         self.merge_duplicates_btn.triggered.connect(self.merge_pressed)
         self.addAction(self.merge_duplicates_btn)
 
         # Select folder button
         self.destination_folder_btn = QAction(
-            icon=icons.open_folder(size=20), text="Destination folder"
+            icon=icons.open_folder(size=20, color=(183, 143, 60)), text="Destination"
         )
         self.destination_folder_btn.triggered.connect(self.select_destination_folder)
         self.addAction(self.destination_folder_btn)
@@ -72,7 +74,7 @@ class DRToolbar(QToolBar):
         self.destination_folder_label.setSizePolicy(
             QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred
         )
-        self.destination_folder_label.setFixedWidth(350)
+        self.destination_folder_label.setMinimumWidth(200)
         self.addWidget(self.destination_folder_label)
 
         # Spacer
@@ -89,28 +91,40 @@ class DRToolbar(QToolBar):
         self.addAction(self.settings_btn)
 
     @Slot(dict)
-    def merge_folder_loaded(self, cfg: dict):
-        self.destination_folder_label.setText(cfg[MERGE_FOLDER])
+    def set_merge_folder(self, cfg: dict):
+        merge_folder = short_path(cfg.get(MERGE_FOLDER))
+        do_if_present(merge_folder, self.destination_folder_label.setText)
 
     @Slot(dict)
     def select_destination_folder(self):
         directory = QFileDialog.getExistingDirectory(
             self, caption="Select destination directory", dir=HOME_DIR
         )
-        value = {MERGE_FOLDER: directory}
-        self.signals.CONFIGS_CHANGE.emit(value)
+        if directory is not None and len(directory) > 0:
+            self.signals.CONFIGS_CHANGE.emit({MERGE_FOLDER: directory})
 
-    @Slot(dict)
-    def add_scan_folder(self):
+    def select_folder(self):
         directory = QFileDialog.getExistingDirectory(
             self, caption="Select folder to scan", dir=HOME_DIR
         )
         if directory is not None and len(directory) > 0:
             size = get_folder_size(directory)
             date = friendly_date(os.stat(directory).st_ctime)
-            directory_record = dict(path=directory, size=size, date=date)
+            return dict(path=directory, size=size, date=date)
+        else:
+            return None
 
-            self.signals.ADD_FOLDER_PRESSED.emit(directory_record)
+    @Slot(dict)
+    def add_scan_folder(self):
+        record = self.select_folder()
+        if record is not None:
+            self.signals.ADD_FOLDER_PRESSED.emit(record)
+
+    @Slot(dict)
+    def exclude_scan_folder(self):
+        record = self.select_folder()
+        if record is not None:
+            self.signals.ADD_FOLDER_PRESSED.emit(record)
 
     @Slot()
     def scan_pressed(self):

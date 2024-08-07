@@ -13,10 +13,12 @@ CLOSE_SYM = "\ue805"
 CONFIGS_SYM = "\uE804"
 MERGE_SYM = "\uF1D9"
 PICTURE_FILE_SYM = "\uF1C5"
+PICTURE_SYM = "\uE807"
 SYSTEM_SYM = "\uE803"
-CALENDAR_SYM = "\uE808"
+A_Z_SYM = "\uE808"
 EDIT_SYM = "\uE80A"
 ADJUST_SYM = "\uE809"
+TRASH_BIN_SYM = "\uE80B"
 
 
 def get_icon(symbol: str, font_size: int, font_color: tuple):
@@ -64,11 +66,11 @@ def plus(size=16, color=(80, 76, 74)):
     return get_icon(PLUS_SYM, size, color)
 
 
-def search(size=16, color=(50, 150, 50)):
+def search(size=16, color=(80, 76, 74)):
     return get_icon(SEARCH_SYM, size, color)
 
 
-def close(size=16, color=(50, 150, 50)):
+def close(size=16, color=(80, 76, 74)):
     return get_icon(CLOSE_SYM, size, color)
 
 
@@ -76,29 +78,37 @@ def configs(size=16, color=(80, 76, 74)):
     return get_icon(CONFIGS_SYM, size, color)
 
 
-def open_folder(size=16, color=(183, 143, 60)):
+def open_folder(size=16, color=(80, 76, 74)):
     return get_icon(FOLDER_OPEN_SYM, size, color)
 
 
-def merge(size=16, color=(50, 150, 50)):
+def merge(size=16, color=(80, 76, 74)):
     return get_icon(MERGE_SYM, size, color)
 
 
-def picture_file(size=16, color=(50, 150, 50)):
+def picture_file(size=16, color=(80, 76, 74)):
     return get_icon(PICTURE_FILE_SYM, size, color)
 
 
-def system(size=16, color=(50, 150, 50)):
+def picture(size=16, color=(80, 76, 74)):
+    return get_icon(PICTURE_SYM, size, color)
+
+
+def trash_bin(size=16, color=(80, 76, 74)):
+    return get_icon(TRASH_BIN_SYM, size, color)
+
+
+def system(size=16, color=(80, 76, 74)):
     return get_icon(SYSTEM_SYM, size, color)
 
 
-def calender(size=16, color=(50, 150, 50)):
-    return get_icon(CALENDAR_SYM, size, color)
+def a_z(size=16, color=(80, 76, 74)):
+    return get_icon(A_Z_SYM, size, color)
 
 
-def edit(size=16, color=(50, 150, 50)):
+def edit(size=16, color=(80, 76, 74)):
     return get_icon(EDIT_SYM, size, color)
 
 
-def adjust(size=16, color=(50, 150, 50)):
+def adjust(size=16, color=(80, 76, 74)):
     return get_icon(ADJUST_SYM, size, color)

@@ -1,5 +1,6 @@
 from PySide6.QtCore import Slot
 
+from configs import FOLDERS_TO_SCAN
 from controller.ds_service import DuplicateScanner
 from model.signals import AppSignals
 from util.utils import short_path, threaded
@@ -28,16 +29,18 @@ class ApplicationController:
         self.signals.MERGE_PRESSED.connect(self.merge_images)
 
     @Slot(None)
-    def add_folder(self, directory_record):
+    def add_folder(self, record):
         # TODO make sure we dont add subfolders of folder to scan
         # TODO Consider to add validators for this
-        self.model.add_folder_to_scan(directory_record)
-        self.signals.CONFIGS_CHANGE.emit(self.model.to_configs())
+        folders = self.model.folders_to_scan()
+        folders[record["path"]] = record
+        self.signals.CONFIGS_CHANGE.emit({FOLDERS_TO_SCAN: folders})
 
     @Slot(str)
     def remove_folder(self, path):
-        self.model.remove_folder_to_scan(path)
-        self.signals.CONFIGS_CHANGE.emit(self.model.to_configs())
+        folders = self.model.folders_to_scan()
+        folders.pop(path)
+        self.signals.CONFIGS_CHANGE.emit({FOLDERS_TO_SCAN: folders})
 
     # @threaded
     @Slot(None)
@@ -45,11 +48,11 @@ class ApplicationController:
     def scan(self):
         # TODO make sure we set everything correctly
         # TODO Consider to add validators for this
-        # TODO Check if folders-to-scan are not subdirs of each other
+        # TODO Check if folders-to-scan are not sub-dirs of each other
         # TODO Skip
         self.model.set_duplicates(None)
         self.signals.SCANNING.emit(True)
-        result = self.service.scan_for_duplicates(self.model)
+        result = self.service.scan_for_duplicates()
 
         # prepare view data
         duplicates = [i for i in result]
@@ -69,4 +72,4 @@ class ApplicationController:
         if len(self.model.duplicates) == 0:
             return
 
-        self.service.merge_results(self.model)
+        self.service.merge_results()

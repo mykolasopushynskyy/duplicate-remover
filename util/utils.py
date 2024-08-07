@@ -11,7 +11,6 @@ from pillow_heif import register_heif_opener
 
 register_heif_opener()
 
-
 # Define a tuple with common image file extensions
 HOME = os.path.expanduser("~")
 EXIF_TAG = 0x8769
@@ -41,8 +40,13 @@ CAMERAS_FILE_NAMING_PATTERNS = (
 )
 
 
+def do_if_present(value, call: callable):
+    if value is not None:
+        return call(value)
+
+
 def short_path(abs_path: str):
-    if abs_path.startswith(HOME):
+    if abs_path is not None and abs_path.startswith(HOME):
         return abs_path.replace(HOME, "~", 1)
     else:
         return abs_path
@@ -120,14 +124,16 @@ def chunk_reader(file, chunk_size=1024):
 def get_hash(filename, quick_hash=False, chunk_size=1024, hash_alg=hashlib.sha1):
     hasher = hash_alg()
     file_object = open(filename, "rb")
+    file_size = os.path.getsize(filename)
 
     if quick_hash:
         start_chunk = file_object.read(chunk_size)
         hasher.update(start_chunk)
 
-        file_object.seek(-chunk_size, os.SEEK_END)
-        end_chunk = file_object.read(chunk_size)
-        hasher.update(end_chunk)
+        if file_size > chunk_size:
+            file_object.seek(-chunk_size, os.SEEK_END)
+            end_chunk = file_object.read(chunk_size)
+            hasher.update(end_chunk)
     else:
         for chunk in chunk_reader(file_object, chunk_size):
             hasher.update(chunk)
@@ -163,7 +169,7 @@ def read_exif_date(exif: dict, date_key: int, default_value: datetime = None):
         return default_value
 
 
-def get_min_image_date(files):
+def get_min_image_date(files, parse_filename=True):
     # get created year
     file = str(
         min(
@@ -176,7 +182,9 @@ def get_min_image_date(files):
     exif_data = get_exif_data(file)
     os_stat = os.stat(file)
 
-    file_name_dt = extract_datetime_from_filename(file)
+    file_name_dt = (
+        None if parse_filename is False else extract_datetime_from_filename(file)
+    )
     file_st_a_dt = datetime.fromtimestamp(os_stat.st_atime)
     file_st_m_dt = datetime.fromtimestamp(os_stat.st_mtime)
     file_st_c_dt = datetime.fromtimestamp(os_stat.st_ctime)
@@ -203,7 +211,6 @@ def get_min_image_date(files):
 
 
 def extract_datetime_from_filename(filename):
-
     for pattern, date_formats in CAMERAS_FILE_NAMING_PATTERNS:
         match = re.search(pattern, filename)
         if match is None:

@@ -38,7 +38,6 @@ class CentralWidget(QWidget):
         self.layout.addWidget(self.results)
 
 
-# TODO Implement proper menus for this application
 # TODO Disable views during search like toolbar, folder list, etc
 class DRQMainWindow(QMainWindow):
     def __init__(self, signals: AppSignals):

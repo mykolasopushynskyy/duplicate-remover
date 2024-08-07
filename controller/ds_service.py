@@ -1,8 +1,7 @@
 import os
-import platform
 import shutil
 
-from configs import ConfigManager, EXTENSIONS_TO_SCAN
+
 from model.model import ApplicationModel
 from model.signals import AppSignals
 from util.utils import get_hash, convert_size, get_min_image_date
@@ -13,12 +12,12 @@ register_heif_opener()
 
 
 class DuplicateScanner:
-    def __init__(self, signals: AppSignals, configs: ConfigManager):
+    def __init__(self, signals: AppSignals, model: ApplicationModel):
         self.signals = signals
-        self.configs = configs
+        self.model = model
 
     # TODO Implement proper error handling for file scanning
-    def scan_for_duplicates(self, model: ApplicationModel):
+    def scan_for_duplicates(self):
         results = []
 
         hash_lvl_1 = {}
@@ -30,12 +29,12 @@ class DuplicateScanner:
         files_checked_v2 = 0
         files_checked_v3 = 0
 
-        platform.system()
-        skip_dirs = model.merge_folder
+        skip_dirs = self.model.get_system_folders_to_skip()
+        skip_dirs.append(self.model.merge_folder())
 
         start = timer()
         # form level one dict with keys of file size
-        for directory in model.folders_to_scan.keys():
+        for directory in self.model.folders_to_scan().keys():
             for root, dirs, files in os.walk(directory):
                 if root == skip_dirs:
                     continue
@@ -43,7 +42,7 @@ class DuplicateScanner:
                 files = [
                     os.path.abspath(os.path.join(root, file))
                     for file in files
-                    if file.lower().endswith(self.configs.get(EXTENSIONS_TO_SCAN))
+                    if file.lower().endswith(self.model.extensions_to_scan())
                 ]
 
                 for file in files:
@@ -132,17 +131,18 @@ class DuplicateScanner:
 
         return results
 
-    def merge_results(self, model: ApplicationModel):
-        actions = sum([1 + len(files) for files in model.duplicates])
+    def merge_results(self):
+        parse_filename = self.model.pase_filename()
+        actions = sum([1 + len(files) for files in self.model.duplicates])
         action = 0
-        for i, files in enumerate(model.duplicates):
+        for i, files in enumerate(self.model.duplicates):
             old_file_path = str(min([file for file in files], key=len))
             old_file_dir, file_name = os.path.split(old_file_path)
 
-            creation_date = get_min_image_date(files)
+            creation_date = get_min_image_date(files, parse_filename)
 
             new_file_dir = os.path.abspath(
-                os.path.join(model.merge_folder, str(creation_date.year))
+                os.path.join(self.model.merge_folder(), str(creation_date.year))
             )
             new_file_path = os.path.abspath(os.path.join(new_file_dir, file_name))
 

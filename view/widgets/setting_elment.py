@@ -12,21 +12,22 @@ from model.signals import AppSignals
 
 
 class SettingsElement(QFrame):
-    def __init__(self, signals: AppSignals, image: QIcon, label: str, *args, **kwargs):
+    def __init__(self, signals: AppSignals, icon: QIcon, label: str, *args, **kwargs):
         QFrame.__init__(self, *args, **kwargs)
 
         self.signals = signals
 
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         self.layout = QHBoxLayout()
-        self.image = image
+        self.icon = icon
 
         self.icon_label = QLabel()
+        self.icon_label.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         self.icon_label.setSizePolicy(
             QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred
         )
         self.icon_label.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
-        self.icon_label.setPixmap(self.image.pixmap(self.image.availableSizes()[0]))
+        self.icon_label.setPixmap(self.icon.pixmap(self.icon.availableSizes()[0]))
         self.layout.addWidget(self.icon_label)
 
         self.title_label = QLabel(text=label)

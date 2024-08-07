@@ -17,7 +17,7 @@ class FoldersList(QGroupBox):
         QGroupBox.__init__(self, title)
         self.signals = signals
         self.paths = []
-        self.signals.MODEL_LOAD.connect(self.load_folders)
+        self.signals.CONFIGS_LOAD.connect(self.load_folders)
         self.signals.ADD_FOLDER_PRESSED.connect(self.add_folder)
 
         self.layout = QVBoxLayout()

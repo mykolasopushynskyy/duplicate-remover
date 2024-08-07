@@ -31,9 +31,11 @@ FOLDERS_TO_SCAN = "folders_to_scan"
 DELETE_ORIGINAL_FILES = "delete_original_files"
 EXTENSIONS_TO_SCAN = "extensions_to_scan"
 PARSE_DATE_FROM_FILENAME = "parse_date_from_filename"
+MERGE_FILE_FORMATS = "merge_file_formats"
 MERGE_FILE_FORMAT = "merge_file_format"
 SYSTEM_FOLDERS_TO_SKIP = "system_folders_to_skip"
-APPEARANCE_THEME = "appearance_theme"
+APPLICATION_THEMES = "application_themes"
+APPLICATION_THEME = "application_theme"
 
 
 def load_file(file):

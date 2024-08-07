@@ -5,7 +5,7 @@ from PySide6.QtGui import QTextBlockFormat
 class AppSignals(QObject):
 
     SCANNING = Signal(bool, name="scan_started")
-    MODEL_LOAD = Signal(dict, name="model_load")
+    CONFIGS_LOAD = Signal(dict, name="model_load")
     REMOVE_FOLDER_PRESSED = Signal(str, name="remove_folder_pressed")
     ADD_FOLDER_PRESSED = Signal(dict, name="add_folder_pressed")
     SELECT_FOLDER_CHANGED = Signal(name="select_folder_pressed")
