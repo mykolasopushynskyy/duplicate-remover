@@ -37,7 +37,7 @@ class AnimatedToggle(QCheckBox):
         self._handle_checked_brush = QBrush(QColor(checked_color))
 
         # Setup the rest of the widget.
-        self.setContentsMargins(8, 0, 8, 0)
+        self.setContentsMargins(2, 0, 2, 0)
         self._handle_position = 0
 
         # self._pulse_radius = 0
@@ -51,7 +51,7 @@ class AnimatedToggle(QCheckBox):
         self.stateChanged.connect(self.setup_animation)
 
     def sizeHint(self):
-        return QSize(50, 0)
+        return QSize(40, 0)
 
     def hitButton(self, pos: QPoint):
         return self.contentsRect().contains(pos)

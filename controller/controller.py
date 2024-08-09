@@ -29,11 +29,11 @@ class ApplicationController:
         self.signals.MERGE_PRESSED.connect(self.merge_images)
 
     @Slot(None)
-    def add_folder(self, record):
+    def add_folder(self, folder_dto):
         # TODO make sure we dont add subfolders of folder to scan
         # TODO Consider to add validators for this
         folders = self.model.folders_to_scan()
-        folders[record["path"]] = record
+        folders[folder_dto.path] = folder_dto.to_dict()
         self.signals.CONFIGS_CHANGE.emit({FOLDERS_TO_SCAN: folders})
 
     @Slot(str)

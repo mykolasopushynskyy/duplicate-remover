@@ -56,18 +56,19 @@ class ResultsList(QGroupBox):
         ]
 
         for i, blocks in enumerate(duplicates):
-            for d in blocks:
+            for text in blocks:
                 if i % 2 == 1:
-                    self.signals.PRINT_RESULT_CHUNK.emit(d, BLUE_FMT)
+                    self.signals.PRINT_RESULT_CHUNK.emit(text, BLUE_FMT)
                 else:
-                    self.signals.PRINT_RESULT_CHUNK.emit(d, LAVENDER_FMT)
+                    self.signals.PRINT_RESULT_CHUNK.emit(text, LAVENDER_FMT)
 
     @Slot(str, QTextBlockFormat)
     def print_text_block(self, text: str, fmt: QTextBlockFormat):
-        self.text_edit.textCursor().beginEditBlock()
-        self.text_edit.textCursor().setBlockFormat(fmt)
-        self.text_edit.textCursor().insertText(text)
-        self.text_edit.textCursor().endEditBlock()
+        cursor = self.text_edit.textCursor()
+        cursor.beginEditBlock()
+        cursor.setBlockFormat(fmt)
+        cursor.insertText(text)
+        cursor.endEditBlock()
 
     def scanning(self):
         self.text_edit.clear()

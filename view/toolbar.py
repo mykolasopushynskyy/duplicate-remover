@@ -11,6 +11,7 @@ from PySide6.QtWidgets import (
 )
 
 from configs import HOME_DIR, MERGE_FOLDER
+from model.dto.folder import FolderDTO
 from model.signals import AppSignals
 from util import icons
 from util.utils import get_folder_size, friendly_date, do_if_present, short_path
@@ -40,7 +41,7 @@ class DRToolbar(QToolBar):
         self.exclude_folder_btn = QAction(
             icon=icons.minus(size=20), text="Exclude folder"
         )
-        self.exclude_folder_btn.triggered.connect(self.add_scan_folder)
+        self.exclude_folder_btn.triggered.connect(self.exclude_scan_folder)
         self.addAction(self.exclude_folder_btn)
 
         # Spacer
@@ -58,7 +59,9 @@ class DRToolbar(QToolBar):
         self.addAction(self.search_duplicates_btn)
 
         # Merge duplicates
-        self.merge_duplicates_btn = QAction(icon=icons.picture(size=20), text="Merge")
+        self.merge_duplicates_btn = QAction(
+            icon=icons.picture(size=20, color=(63, 132, 247)), text="Merge"
+        )
         self.merge_duplicates_btn.triggered.connect(self.merge_pressed)
         self.addAction(self.merge_duplicates_btn)
 
@@ -110,7 +113,7 @@ class DRToolbar(QToolBar):
         if directory is not None and len(directory) > 0:
             size = get_folder_size(directory)
             date = friendly_date(os.stat(directory).st_ctime)
-            return dict(path=directory, size=size, date=date)
+            return FolderDTO(path=directory, size=size, date=date, exclude=False)
         else:
             return None
 
@@ -124,6 +127,7 @@ class DRToolbar(QToolBar):
     def exclude_scan_folder(self):
         record = self.select_folder()
         if record is not None:
+            record.exclude = True
             self.signals.ADD_FOLDER_PRESSED.emit(record)
 
     @Slot()

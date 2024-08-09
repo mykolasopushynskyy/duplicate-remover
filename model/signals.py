@@ -1,13 +1,15 @@
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtGui import QTextBlockFormat
 
+from model.dto.folder import FolderDTO
+
 
 class AppSignals(QObject):
 
     SCANNING = Signal(bool, name="scan_started")
     CONFIGS_LOAD = Signal(dict, name="model_load")
     REMOVE_FOLDER_PRESSED = Signal(str, name="remove_folder_pressed")
-    ADD_FOLDER_PRESSED = Signal(dict, name="add_folder_pressed")
+    ADD_FOLDER_PRESSED = Signal(FolderDTO, name="add_folder_pressed")
     SELECT_FOLDER_CHANGED = Signal(name="select_folder_pressed")
     SCAN_PRESSED = Signal(name="scan_duplicates_pressed")
     MERGE_PRESSED = Signal(name="merge_pressed")

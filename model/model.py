@@ -9,6 +9,7 @@ from configs import (
     FOLDERS_TO_SCAN,
     EXTENSIONS_TO_SCAN,
     PARSE_DATE_FROM_FILENAME,
+    DELETE_ORIGINAL_FILES,
 )
 from model.signals import AppSignals
 
@@ -23,6 +24,9 @@ class ApplicationModel(ConfigManager):
 
     def set_duplicates(self, duplicates):
         self.duplicates = duplicates
+
+    def delete_originals(self):
+        return self.get(DELETE_ORIGINAL_FILES)
 
     def folders_to_scan(self):
         return self.get(FOLDERS_TO_SCAN)

@@ -29,14 +29,26 @@ class DuplicateScanner:
         files_checked_v2 = 0
         files_checked_v3 = 0
 
-        skip_dirs = self.model.get_system_folders_to_skip()
-        skip_dirs.append(self.model.merge_folder())
+        # excluded folders
+        folders_to_exclude = [
+            path
+            for path, record in self.model.folders_to_scan().items()
+            if record.get("exclude")
+        ]
+        folders_to_exclude.extend(self.model.get_system_folders_to_skip())
+        folders_to_exclude.append(self.model.merge_folder())
+
+        folders_to_scan = [
+            path
+            for path, record in self.model.folders_to_scan().items()
+            if (not record.get("exclude"))
+        ]
 
         start = timer()
         # form level one dict with keys of file size
-        for directory in self.model.folders_to_scan().keys():
+        for directory in folders_to_scan:
             for root, dirs, files in os.walk(directory):
-                if root == skip_dirs:
+                if root in folders_to_exclude:
                     continue
 
                 files = [
@@ -153,12 +165,17 @@ class DuplicateScanner:
             action += 1
             self.update_merge_status(new_file_path, "created", action, actions)
 
-            for file in files:
-                # TODO add actual delete
-                print(f"delete {file}\n")
-                action += 1
-                self.update_merge_status(file, "deleted", action, actions)
-        print("\n")
+            if self.model.delete_originals():
+                for file in files:
+                    try:
+                        os.remove(old_file_path)
+                        action += 1
+                        self.update_merge_status(file, "deleted", action, actions)
+                    except OSError as e:
+                        # If it fails, inform the user.
+                        print("Error: %s - %s." % (e.filename, e.strerror))
+                        continue
+
         self.signals.STATUS_MESSAGE_SET.emit("", None)
 
     def update_scan_status(self, files_scanned, files_scanned_size, value, max_value):

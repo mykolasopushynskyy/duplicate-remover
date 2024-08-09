@@ -8,6 +8,8 @@ from PySide6.QtWidgets import (
     QAbstractItemView,
 )
 
+from configs import FOLDERS_TO_SCAN
+from model.dto.folder import FolderDTO
 from model.signals import AppSignals
 from view.widgets.folder_item import FolderItem
 
@@ -34,20 +36,19 @@ class FoldersList(QGroupBox):
         self.layout.addWidget(self.list_widget)
 
     def load_folders(self, model: dict):
-        for folder in model["folders_to_scan"].values():
-            self.add_folder(folder)
+        for folder in model.get(FOLDERS_TO_SCAN).values():
+            self.add_folder(FolderDTO.from_dict(folder))
 
-    def add_folder(self, folder: dict):
+    def add_folder(self, folder: FolderDTO):
         # don't add folder if exist
-        if folder["path"] in self.paths:
+        if folder.path in self.paths:
             return
 
         # add folder
         folder_widget = FolderItem(
-            folder["path"],
-            "Size: %s" % folder["size"],
-            "Date: %s" % folder["date"],
-            lambda: self.remove_folder(self.list_widget, folder["path"]),
+            folder,
+            lambda: self.remove_folder(self.list_widget, folder.path),
+            lambda state: self.exclude_folder(state, folder),
         )
         folder_widget.setFixedHeight(80)
 
@@ -56,12 +57,16 @@ class FoldersList(QGroupBox):
 
         self.list_widget.addItem(folder_item)
         self.list_widget.setItemWidget(folder_item, folder_widget)
-        self.paths.append(folder["path"])
+        self.paths.append(folder.path)
 
     def remove_folder(self, list_widget, path):
         self.signals.REMOVE_FOLDER_PRESSED.emit(path)
         for i in range(0, list_widget.count()):
             folder_widget = list_widget.itemWidget(list_widget.item(i))
-            if folder_widget is not None and folder_widget.path == path:
+            if folder_widget is not None and folder_widget.folder.path == path:
                 list_widget.takeItem(i)
                 self.paths.remove(path)
+
+    def exclude_folder(self, state, folder):
+        folder.exclude = state > 0
+        self.signals.ADD_FOLDER_PRESSED.emit(folder)
