@@ -4,12 +4,14 @@
 Програма знаходить і зливає дублікати файлів/фото
 
 ### Загальна інформація
-> [!NOTE]
-> TBD
+Утиліта знаходить і зливає дублікати файлів/фото. Сортування відбувається по року створення файлу/фотографії. Утиліта призачена для сканування і злиття старих фотоальбомів та фотоархівів в одну галерею. 
 
 ### Приклад роботи програми
-> [!NOTE]
-> TBD
+#### Головне вікно
+![Головне вікно](https://raw.githubusercontent.com/mykolasopushynskyy/duplicate-remover/main/assets/main_window.png)
+
+#### Вікно налаштувань
+![Головне вікно](https://raw.githubusercontent.com/mykolasopushynskyy/duplicate-remover/main/assets/settings_window.png)
 
 ### Запуск 
 Для запуску запустіть скрипт `./duplicate-remover.py`. 
@@ -17,4 +19,4 @@
 ### Ресурси використані в проєкті
 1. [Fontello](https://fontello.com/) - шрифт з вбудованими картинками
 1. [Qt for python](https://wiki.qt.io/Qt_for_Python) - графічний інтерфейс
-1. TBD
+1. [Chat GPT](https://chatgpt.com/) - for some quick stub generation

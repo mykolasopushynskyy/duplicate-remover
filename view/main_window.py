@@ -47,7 +47,6 @@ class DRQMainWindow(QMainWindow):
         # window settings
         self.setWindowTitle("Duplicate Remover")
         self.setMinimumSize(1200, 800)
-        self.setUnifiedTitleAndToolBarOnMac(True)
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.PreventContextMenu)
         geometry = self.screen().availableGeometry()
         center_point = QPoint(
