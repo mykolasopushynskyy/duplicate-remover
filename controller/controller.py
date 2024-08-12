@@ -49,9 +49,8 @@ class ApplicationController:
         # TODO make sure we set everything correctly
         # TODO Consider to add validators for this
         # TODO Check if folders-to-scan are not sub-dirs of each other
-        # TODO Skip
         self.model.set_duplicates(None)
-        self.signals.SCANNING.emit(True)
+        self.signals.PROCESSING.emit(True)
         result = self.service.scan_for_duplicates()
 
         # prepare view data
@@ -60,6 +59,7 @@ class ApplicationController:
         duplicates = [[short_path(ap) for ap in entries] for entries in duplicates]
 
         self.model.set_duplicates(result)
+        self.signals.PROCESSING.emit(False)
         self.signals.RESULTS_ARRIVED.emit(duplicates)
 
     @Slot(None)
@@ -68,8 +68,8 @@ class ApplicationController:
         # TODO make sure we set everything correctly
         # TODO Consider to add validators for this
         # TODO Check if folders-to-scan are not subdirs of each other
-        # TODO Skip
         if len(self.model.duplicates) == 0:
             return
-
+        self.signals.PROCESSING.emit(True)
         self.service.merge_results()
+        self.signals.PROCESSING.emit(False)

@@ -6,7 +6,7 @@ from model.dto.folder import FolderDTO
 
 class AppSignals(QObject):
 
-    SCANNING = Signal(bool, name="scan_started")
+    PROCESSING = Signal(bool, name="processing")
     CONFIGS_LOAD = Signal(dict, name="model_load")
     REMOVE_FOLDER_PRESSED = Signal(str, name="remove_folder_pressed")
     ADD_FOLDER_PRESSED = Signal(FolderDTO, name="add_folder_pressed")

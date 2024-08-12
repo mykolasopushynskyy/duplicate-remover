@@ -37,6 +37,8 @@ class FolderItem(QWidget):
         self.v_icon_layout.setSpacing(0)
         self.v_label_layout = QVBoxLayout()
         self.v_label_layout.setSpacing(0)
+        self.h_label_layout = QHBoxLayout()
+        self.h_label_layout.setSpacing(0)
         self.v_btn_layout = QVBoxLayout()
         self.v_btn_layout.setSpacing(0)
 
@@ -52,21 +54,28 @@ class FolderItem(QWidget):
         self.path_label = QLabel(text=utils.short_path(self.folder.path))
         self.path_label.setProperty("qss", "file_label")
         self.path_label.setFixedWidth(275)
-        # self.path_label.setStyleSheet("border: 1px solid silver;")
         self.v_label_layout.addWidget(self.path_label)
 
         self.size_label = QLabel(text=self.folder.size)
         self.size_label.setProperty("qss", "file_size")
         self.size_label.setFixedWidth(275)
-        # self.size_label.setStyleSheet("border: 1px solid silver;")
         self.v_label_layout.addWidget(self.size_label)
 
         self.date_label = QLabel(text=self.folder.date)
         self.date_label.setProperty("qss", "file_date")
-        self.date_label.setFixedWidth(275)
-        # self.date_label.setStyleSheet("border: 1px solid silver;")
-        self.v_label_layout.addWidget(self.date_label)
+        self.date_label.setFixedWidth(150)
+        self.h_label_layout.addWidget(self.date_label)
 
+        self.exclude_label = QLabel(text=self.folder.date)
+        self.exclude_label.setProperty("qss", "exclude_label")
+        self.exclude_label.setFixedWidth(125)
+        self.exclude_label.setText("Exclude")
+        self.exclude_label.setAlignment(
+            Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter
+        )
+        self.h_label_layout.addWidget(self.exclude_label)
+
+        self.v_label_layout.addLayout(self.h_label_layout)
         self.h_layout.addLayout(self.v_label_layout)
 
         self.remove_button = QPushButton(

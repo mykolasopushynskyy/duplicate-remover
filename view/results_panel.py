@@ -30,7 +30,7 @@ class ResultsList(QGroupBox):
         QGroupBox.__init__(self, title)
         self.signals = signals
         self.signals.RESULTS_ARRIVED.connect(self.results_arrived)
-        self.signals.SCANNING.connect(self.scanning)
+        self.signals.PROCESSING.connect(self.scanning)
         self.signals.PRINT_RESULT_CHUNK.connect(self.print_text_block)
 
         self.h_layout = QHBoxLayout()

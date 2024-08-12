@@ -38,7 +38,6 @@ class CentralWidget(QWidget):
         self.layout.addWidget(self.results)
 
 
-# TODO Disable views during search like toolbar, folder list, etc
 class DRQMainWindow(QMainWindow):
     def __init__(self, signals: AppSignals):
         QMainWindow.__init__(self)
@@ -48,7 +47,7 @@ class DRQMainWindow(QMainWindow):
         # window settings
         self.setWindowTitle("Duplicate Remover")
         self.setMinimumSize(1200, 800)
-        # self.setUnifiedTitleAndToolBarOnMac(True)
+        self.setUnifiedTitleAndToolBarOnMac(True)
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.PreventContextMenu)
         geometry = self.screen().availableGeometry()
         center_point = QPoint(
@@ -70,10 +69,11 @@ class DRQMainWindow(QMainWindow):
 
         # status bar
         self.progressBar = QProgressBar()
-        self.progressBar.setAlignment(Qt.AlignmentFlag.AlignRight)
+        self.progressBar.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.progressBar.setMinimum(0)
         self.progressBar.setMaximum(100)
-        self.progressBar.setMaximumSize(200, 20)
+        self.progressBar.setMaximumSize(200, 10)
+        self.progressBar.setTextVisible(False)
         self.progressBar.hide()
 
         self.status = self.statusBar()

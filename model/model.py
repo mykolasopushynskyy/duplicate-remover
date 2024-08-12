@@ -20,7 +20,6 @@ class ApplicationModel(ConfigManager):
         ConfigManager.__init__(self, signals, config_file)
         # model data
         self.duplicates = []
-        # TODO Add folders to skip in search
 
     def set_duplicates(self, duplicates):
         self.duplicates = duplicates

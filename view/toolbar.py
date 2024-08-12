@@ -24,6 +24,8 @@ class DRToolbar(QToolBar):
         self.signals = signals
         self.signals.CONFIGS_LOAD.connect(self.set_merge_folder)
         self.signals.CONFIGS_CHANGE.connect(self.set_merge_folder)
+        self.signals.PROCESSING.connect(self.processing)
+        self.signals.RESULTS_ARRIVED.connect(self.results_arrived)
 
         # Toolbar properties
         self.setMovable(False)
@@ -92,6 +94,20 @@ class DRToolbar(QToolBar):
         self.settings_btn = QAction(icon=icons.configs(size=20), text="Settings")
         self.settings_btn.triggered.connect(self.settings_pressed)
         self.addAction(self.settings_btn)
+
+    @Slot(bool)
+    def processing(self, is_processing: bool):
+        self.add_folder_btn.setDisabled(is_processing)
+        self.exclude_folder_btn.setDisabled(is_processing)
+        self.search_duplicates_btn.setDisabled(is_processing)
+        self.destination_folder_btn.setDisabled(is_processing)
+
+    @Slot(list)
+    def results_arrived(self, results: list):
+        if len(results) == 0:
+            self.merge_duplicates_btn.setEnabled(False)
+        else:
+            self.merge_duplicates_btn.setEnabled(True)
 
     @Slot(dict)
     def set_merge_folder(self, cfg: dict):

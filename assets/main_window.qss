@@ -42,6 +42,14 @@ QListWidget::item:hover {
     margin: 0px;
 }
 
+*[qss = "exclude_label"] {
+    color: #808080;
+    border: none;
+    font-size: 10px;
+    background: none;
+    margin: 0px;
+}
+
 QGroupBox {
     background: none;
 }
@@ -83,4 +91,16 @@ QToolButton:hover {
     background-color: rgb(223, 218, 216);
     border-radius: 5px;
     margin: 3px;
+}
+
+QProgressBar {
+    border: 1px solid grey;
+    border-radius: 2.5px;
+    height: 5px;
+}
+
+QProgressBar::chunk {
+    background-color: #05B8CC;
+    width: 1px;
+    height: 5px;
 }

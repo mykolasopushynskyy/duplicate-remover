@@ -1,4 +1,4 @@
-from PySide6.QtCore import Qt, QSize
+from PySide6.QtCore import Qt, QSize, Slot
 from PySide6.QtWidgets import (
     QSizePolicy,
     QVBoxLayout,
@@ -21,6 +21,7 @@ class FoldersList(QGroupBox):
         self.paths = []
         self.signals.CONFIGS_LOAD.connect(self.load_folders)
         self.signals.ADD_FOLDER_PRESSED.connect(self.add_folder)
+        self.signals.PROCESSING.connect(self.processing)
 
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
@@ -58,6 +59,12 @@ class FoldersList(QGroupBox):
         self.list_widget.addItem(folder_item)
         self.list_widget.setItemWidget(folder_item, folder_widget)
         self.paths.append(folder.path)
+
+    @Slot(bool)
+    def processing(self, is_processing: bool):
+        for i in range(0, self.list_widget.count()):
+            folder_widget = self.list_widget.itemWidget(self.list_widget.item(i))
+            folder_widget.setDisabled(is_processing)
 
     def remove_folder(self, list_widget, path):
         self.signals.REMOVE_FOLDER_PRESSED.emit(path)

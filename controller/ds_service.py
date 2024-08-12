@@ -146,7 +146,8 @@ class DuplicateScanner:
     def merge_results(self):
         parse_filename = self.model.pase_filename()
         actions = sum([1 + len(files) for files in self.model.duplicates])
-        action = 0
+        caction = 0
+        daction = 0
         for i, files in enumerate(self.model.duplicates):
             old_file_path = str(min([file for file in files], key=len))
             old_file_dir, file_name = os.path.split(old_file_path)
@@ -162,21 +163,21 @@ class DuplicateScanner:
 
             shutil.copy2(old_file_path, new_file_path)
 
-            action += 1
-            self.update_merge_status(new_file_path, "created", action, actions)
+            caction += 1
+            self.update_merge_status(new_file_path, "created", caction, actions)
 
             if self.model.delete_originals():
                 for file in files:
                     try:
                         os.remove(old_file_path)
-                        action += 1
-                        self.update_merge_status(file, "deleted", action, actions)
+                        daction += 1
+                        self.update_merge_status(file, "deleted", caction, actions)
                     except OSError as e:
                         # If it fails, inform the user.
                         print("Error: %s - %s." % (e.filename, e.strerror))
                         continue
 
-        self.signals.STATUS_MESSAGE_SET.emit("", None)
+        self.signals.STATUS_MESSAGE_SET.emit(f"Created {caction} files", None)
 
     def update_scan_status(self, files_scanned, files_scanned_size, value, max_value):
         message = (

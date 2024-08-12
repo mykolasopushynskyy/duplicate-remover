@@ -22,6 +22,8 @@ class DuplicateRemover:
     def load_application_state(self):
         # publish data from settings
         self.signals.CONFIGS_LOAD.emit(self.model.configs)
+        self.signals.PROCESSING.emit(False)
+        self.signals.RESULTS_ARRIVED.emit([])
 
     def start(self):
         self.load_application_state()
