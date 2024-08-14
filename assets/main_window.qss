@@ -1,22 +1,22 @@
-QPlainTextEdit  {
-    border: 1px solid silver;
+QPlainTextEdit:focus  {
+    /* border: 1px solid silver */;
     font-size: 16;
     font-family: "Courier New", monospace;
 }
 
 QListWidget {
-    border: 1px solid silver;
-    background: white;
+    /* border: 1px solid silver */;
+    /* background: white; */
 }
 
 QListWidget::item:hover {
-    background: rgb(240,240,240);
+    /* background: rgb(240, 240, 240); */
 }
 
 *[qss = "file_icon"] {
     background: none;
     margin: 0px;
-    padding: 0px;
+    padding: 5px;
 }
 
 *[qss = "file_label"] {
@@ -29,7 +29,7 @@ QListWidget::item:hover {
 *[qss = "file_size"] {
     border: none;
     font-size: 10px;
-    color: #808080;
+    /* color: #808080; */
     background: none;
     margin: 0px;
 }
@@ -37,13 +37,13 @@ QListWidget::item:hover {
 *[qss = "file_date"] {
     border: none;
     font-size: 10px;
-    color: #1e90ff;
+    /* color: #1e90ff; */
     background: none;
     margin: 0px;
 }
 
 *[qss = "exclude_label"] {
-    color: #808080;
+   /* color: #808080; */
     border: none;
     font-size: 10px;
     background: none;
@@ -64,43 +64,43 @@ QPushButton {
 QPushButton:hover {
     border: none;
     border-radius: 5px;
-    background-color: rgb(223, 218, 216);
+    /* background-color: rgb(223, 218, 216); */
     min-width: 25px;
     min-height: 25px;
 }
 
 QLabel {
     border: none;
-    background: white;
+    /* background: white; */
     border-radius: 5px;
     margin: 7px 0px 7px;
 }
 
 DRToolbar {
     border: none;
-    background: rgb(236, 231, 229);
+    /* background: rgb(236, 231, 229); */
 }
 
 QToolButton {
-    background-color: rgb(236, 231, 229);
+    /* background-color: rgb(236, 231, 229); */
     border-radius: 5px;
     margin: 3px;
 }
 
 QToolButton:hover {
-    background-color: rgb(223, 218, 216);
+    /* background-color: rgb(223, 218, 216); */
     border-radius: 5px;
     margin: 3px;
 }
 
 QProgressBar {
-    border: 1px solid grey;
+    /* border: 1px solid  grey */;
     border-radius: 2.5px;
     height: 5px;
 }
 
 QProgressBar::chunk {
-    background-color: #05B8CC;
+    /*background-color:  #05B8CC; */
     width: 1px;
     height: 5px;
 }

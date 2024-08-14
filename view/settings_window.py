@@ -23,7 +23,7 @@ from configs import (
 )
 from model.signals import AppSignals
 from util import icons
-from util.utils import do_if_present
+from util.optional import Optional
 from view.widgets.animated_toggle import AnimatedToggle
 from view.widgets.setting_elment import SettingsElement
 
@@ -176,32 +176,51 @@ class SettingsWindow(QWidget):
 
     @Slot(dict)
     def load_configs(self, cfg: dict):
-        do_if_present(cfg.get(MERGE_FOLDER), self.destination_folder_label.setText)
-        do_if_present(
-            cfg.get(DELETE_ORIGINAL_FILES), self.delete_original_files_toggle.setChecked
+        # merge folder config
+        (
+            Optional.of(cfg.get(MERGE_FOLDER)).if_present(
+                self.destination_folder_label.setText
+            )
         )
-        do_if_present(cfg.get(EXTENSIONS_TO_SCAN), self.extensions_to_scan_edit.setText)
-        do_if_present(
-            cfg.get(PARSE_DATE_FROM_FILENAME),
-            self.parse_filename_date_toggle.setChecked,
+        # delete original files config
+        (
+            Optional.of(cfg.get(DELETE_ORIGINAL_FILES)).if_present(
+                self.delete_original_files_toggle.setChecked
+            )
         )
-
-        do_if_present(cfg.get(MERGE_FILE_FORMATS), self.filename_format_combo.addItems)
-        do_if_present(
-            cfg.get(MERGE_FILE_FORMATS),
-            lambda formats: do_if_present(
-                do_if_present(cfg.get(MERGE_FILE_FORMAT), formats.index),
-                self.filename_format_combo.setCurrentIndex,
-            ),
+        # images extensions config
+        (
+            Optional.of(cfg.get(EXTENSIONS_TO_SCAN)).if_present(
+                self.extensions_to_scan_edit.setText
+            )
         )
-
-        do_if_present(cfg.get(APPLICATION_THEMES), self.app_theme_combo.addItems)
-        do_if_present(
-            cfg.get(APPLICATION_THEMES),
-            lambda themes: do_if_present(
-                do_if_present(cfg.get(APPLICATION_THEME), themes.index),
-                self.app_theme_combo.setCurrentIndex,
-            ),
+        # parse date from filename config
+        (
+            Optional.of(cfg.get(PARSE_DATE_FROM_FILENAME)).if_present(
+                self.parse_filename_date_toggle.setChecked
+            )
+        )
+        # merge file format dropbox config
+        (
+            Optional.of(cfg.get(MERGE_FILE_FORMATS)).if_present(
+                self.filename_format_combo.addItems
+            )
+        )
+        (
+            Optional.of(cfg.get(MERGE_FILE_FORMAT), cfg.get(MERGE_FILE_FORMAT))
+            .transform(lambda merge_format, formats: formats.index(merge_format))
+            .if_present(self.filename_format_combo.setCurrentIndex)
+        )
+        # application theme dropbox config
+        (
+            Optional.of(cfg.get(APPLICATION_THEMES)).if_present(
+                self.app_theme_combo.addItems
+            )
+        )
+        (
+            Optional.of(cfg.get(APPLICATION_THEME), cfg.get(APPLICATION_THEMES))
+            .transform(lambda theme, themes: themes.index(theme))
+            .if_present(self.app_theme_combo.setCurrentIndex)
         )
 
     @Slot(dict)

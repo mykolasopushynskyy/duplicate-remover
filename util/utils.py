@@ -40,11 +40,6 @@ CAMERAS_FILE_NAMING_PATTERNS = (
 )
 
 
-def do_if_present(value, call: callable):
-    if value is not None:
-        return call(value)
-
-
 def short_path(abs_path: str):
     if abs_path is not None and abs_path.startswith(HOME):
         return abs_path.replace(HOME, "~", 1)

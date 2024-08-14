@@ -50,7 +50,16 @@ class DuplicateScanner:
             for root, dirs, files in os.walk(directory):
 
                 # don't search in excluded folders
-                if len([excluded for excluded in excluded_list if root.startswith(excluded)]) > 0:
+                if (
+                    len(
+                        [
+                            excluded
+                            for excluded in excluded_list
+                            if root.startswith(excluded)
+                        ]
+                    )
+                    > 0
+                ):
                     continue
 
                 files = [
@@ -173,7 +182,9 @@ class DuplicateScanner:
                     try:
                         os.remove(old_file_path)
                         delete_action += 1
-                        self.update_merge_status(file, "deleted", create_action, actions)
+                        self.update_merge_status(
+                            file, "deleted", create_action, actions
+                        )
                     except OSError as e:
                         # If it fails, inform the user.
                         print("Error: %s - %s." % (e.filename, e.strerror))

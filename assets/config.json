@@ -6,8 +6,8 @@
     "parse_date_from_filename": true,
     "merge_file_formats": ["Shortest file name", "Earliest creation date"],
     "merge_file_format": "Shortest file name",
-    "application_themes": ["Light", "Dark", "System"],
-    "application_theme": "System",
+    "application_themes": ["Light", "Dark", "Auto"],
+    "application_theme": "Auto",
     "system_folders_to_skip": {
         "Windows": [
             "\\Windows",

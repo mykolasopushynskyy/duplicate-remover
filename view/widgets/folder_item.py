@@ -53,22 +53,22 @@ class FolderItem(QWidget):
 
         self.path_label = QLabel(text=utils.short_path(self.folder.path))
         self.path_label.setProperty("qss", "file_label")
-        self.path_label.setFixedWidth(275)
+        self.path_label.setFixedWidth(270)
         self.v_label_layout.addWidget(self.path_label)
 
         self.size_label = QLabel(text=self.folder.size)
         self.size_label.setProperty("qss", "file_size")
-        self.size_label.setFixedWidth(275)
+        self.size_label.setFixedWidth(270)
         self.v_label_layout.addWidget(self.size_label)
 
         self.date_label = QLabel(text=self.folder.date)
         self.date_label.setProperty("qss", "file_date")
-        self.date_label.setFixedWidth(150)
+        self.date_label.setFixedWidth(145)
         self.h_label_layout.addWidget(self.date_label)
 
         self.exclude_label = QLabel(text=self.folder.date)
         self.exclude_label.setProperty("qss", "exclude_label")
-        self.exclude_label.setFixedWidth(125)
+        self.exclude_label.setFixedWidth(120)
         self.exclude_label.setText("Exclude")
         self.exclude_label.setAlignment(
             Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter
@@ -100,7 +100,7 @@ class FolderItem(QWidget):
         self.exclude_check.setSizePolicy(
             QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding
         )
-        self.exclude_check.setFixedWidth(30)
+        self.exclude_check.setFixedWidth(25)
         self.exclude_check.setChecked(self.folder.exclude)
         self.exclude_check.stateChanged.connect(self.on_exclude)
         self.v_btn_layout.addWidget(self.exclude_check)

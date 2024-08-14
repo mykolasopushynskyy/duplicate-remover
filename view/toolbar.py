@@ -14,7 +14,8 @@ from configs import HOME_DIR, MERGE_FOLDER
 from model.dto.folder import FolderDTO
 from model.signals import AppSignals
 from util import icons
-from util.utils import get_folder_size, friendly_date, do_if_present, short_path
+from util.optional import Optional
+from util.utils import get_folder_size, friendly_date, short_path
 from view.settings_window import SettingsWindow
 
 
@@ -113,8 +114,11 @@ class DRToolbar(QToolBar):
 
     @Slot(dict)
     def set_merge_folder(self, cfg: dict):
-        merge_folder = short_path(cfg.get(MERGE_FOLDER))
-        do_if_present(merge_folder, self.destination_folder_label.setText)
+        (
+            Optional.of(cfg.get(MERGE_FOLDER))
+            .transform(short_path)
+            .if_present(self.destination_folder_label.setText)
+        )
 
     @Slot(dict)
     def select_destination_folder(self):

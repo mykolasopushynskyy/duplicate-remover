@@ -4,7 +4,8 @@ from PySide6.QtWidgets import (
     QWidget,
     QSizePolicy,
     QHBoxLayout,
-    QProgressBar, QApplication,
+    QProgressBar,
+    QApplication,
 )
 
 import configs

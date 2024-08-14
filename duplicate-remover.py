@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
-import sys
 
-from PySide6.QtGui import QPalette, QColor
-from PySide6.QtWidgets import QStyleFactory
 
 from controller.controller import ApplicationController
 from controller.ds_service import DuplicateScanner
@@ -18,7 +15,7 @@ class DuplicateRemover:
         super().__init__()
         self.signals = AppSignals()
         self.model = ApplicationModel(self.signals)
-        self.app = DRQApplication(self.signals, sys.argv)
+        self.app = DRQApplication(sys.argv, self.signals)
         self.service = DuplicateScanner(self.signals, self.model)
         self.controller = ApplicationController(self.signals, self.model, self.service)
 
