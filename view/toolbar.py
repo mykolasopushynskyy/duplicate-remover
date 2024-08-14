@@ -101,6 +101,8 @@ class DRToolbar(QToolBar):
         self.exclude_folder_btn.setDisabled(is_processing)
         self.search_duplicates_btn.setDisabled(is_processing)
         self.destination_folder_btn.setDisabled(is_processing)
+        self.merge_duplicates_btn.setDisabled(is_processing)
+        self.settings_btn.setDisabled(is_processing)
 
     @Slot(list)
     def results_arrived(self, results: list):

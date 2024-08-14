@@ -11,7 +11,7 @@
 ![Головне вікно](https://raw.githubusercontent.com/mykolasopushynskyy/duplicate-remover/main/assets/main_window.png)
 
 #### Вікно налаштувань
-![Головне вікно](https://raw.githubusercontent.com/mykolasopushynskyy/duplicate-remover/main/assets/settings_window.png)
+![Вікно налаштувань](https://raw.githubusercontent.com/mykolasopushynskyy/duplicate-remover/main/assets/settings_window.png)
 
 ### Запуск 
 Для запуску запустіть скрипт `./duplicate-remover.py`. 

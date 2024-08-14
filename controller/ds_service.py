@@ -30,13 +30,13 @@ class DuplicateScanner:
         files_checked_v3 = 0
 
         # excluded folders
-        folders_to_exclude = [
+        excluded_list = [
             path
             for path, record in self.model.folders_to_scan().items()
             if record.get("exclude")
         ]
-        folders_to_exclude.extend(self.model.get_system_folders_to_skip())
-        folders_to_exclude.append(self.model.merge_folder())
+        excluded_list.extend(self.model.get_system_folders_to_skip())
+        excluded_list.append(self.model.merge_folder())
 
         folders_to_scan = [
             path
@@ -48,7 +48,9 @@ class DuplicateScanner:
         # form level one dict with keys of file size
         for directory in folders_to_scan:
             for root, dirs, files in os.walk(directory):
-                if root in folders_to_exclude:
+
+                # don't search in excluded folders
+                if len([excluded for excluded in excluded_list if root.startswith(excluded)]) > 0:
                     continue
 
                 files = [
@@ -146,8 +148,8 @@ class DuplicateScanner:
     def merge_results(self):
         parse_filename = self.model.pase_filename()
         actions = sum([1 + len(files) for files in self.model.duplicates])
-        caction = 0
-        daction = 0
+        create_action = 0
+        delete_action = 0
         for i, files in enumerate(self.model.duplicates):
             old_file_path = str(min([file for file in files], key=len))
             old_file_dir, file_name = os.path.split(old_file_path)
@@ -163,21 +165,21 @@ class DuplicateScanner:
 
             shutil.copy2(old_file_path, new_file_path)
 
-            caction += 1
-            self.update_merge_status(new_file_path, "created", caction, actions)
+            create_action += 1
+            self.update_merge_status(new_file_path, "created", create_action, actions)
 
             if self.model.delete_originals():
                 for file in files:
                     try:
                         os.remove(old_file_path)
-                        daction += 1
-                        self.update_merge_status(file, "deleted", caction, actions)
+                        delete_action += 1
+                        self.update_merge_status(file, "deleted", create_action, actions)
                     except OSError as e:
                         # If it fails, inform the user.
                         print("Error: %s - %s." % (e.filename, e.strerror))
                         continue
 
-        self.signals.STATUS_MESSAGE_SET.emit(f"Created {caction} files", None)
+        self.signals.STATUS_MESSAGE_SET.emit(f"Created {create_action} files", None)
 
     def update_scan_status(self, files_scanned, files_scanned_size, value, max_value):
         message = (

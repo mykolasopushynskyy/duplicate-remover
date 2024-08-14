@@ -38,7 +38,7 @@ APPLICATION_THEMES = "application_themes"
 APPLICATION_THEME = "application_theme"
 
 
-def load_file(file):
+def load_json(file):
     if os.path.exists(file):
         with open(file, "r") as f:
             return json.load(f)
@@ -58,8 +58,8 @@ class ConfigManager:
         signals.CONFIGS_CHANGE.connect(self.update_configs)
 
     def load_config(self):
-        default_config = load_file(DEFAULT_CONFIG_FILE_PATH)
-        config = load_file(self.config_file)
+        default_config = load_json(DEFAULT_CONFIG_FILE_PATH)
+        config = load_json(self.config_file)
 
         return {
             key: value

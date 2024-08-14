@@ -4,7 +4,7 @@ from PySide6.QtWidgets import (
     QWidget,
     QSizePolicy,
     QHBoxLayout,
-    QProgressBar,
+    QProgressBar, QApplication,
 )
 
 import configs
@@ -96,3 +96,7 @@ class DRQMainWindow(QMainWindow):
             self.progressBar.setValue(progress)
         else:
             self.progressBar.hide()
+
+    def closeEvent(self, event):
+        QApplication.closeAllWindows()
+        event.accept()

@@ -2,7 +2,7 @@
     "merge_folder": null,
     "folders_to_scan": { },
     "delete_original_files": false,
-    "extensions_to_scan": ".jpg .jpeg .heic",
+    "extensions_to_scan": ".jpg .jpeg .heic .cr2",
     "parse_date_from_filename": true,
     "merge_file_formats": ["Shortest file name", "Earliest creation date"],
     "merge_file_format": "Shortest file name",
