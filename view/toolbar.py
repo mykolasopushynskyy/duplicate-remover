@@ -53,6 +53,7 @@ class DRToolbar(QToolBar):
             QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred
         )
         self.spacer_1.setFixedWidth(325)
+        self.spacer_1.setProperty("qss", "transparent")
         self.spacer_1.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         self.addWidget(self.spacer_1)
 
@@ -77,14 +78,17 @@ class DRToolbar(QToolBar):
 
         # Select folder label
         self.destination_folder_label = QLabel(text="Folder address")
-        self.destination_folder_label.setSizePolicy(
-            QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred
-        )
+        self.destination_folder_label.setProperty("qss", "destination_folder")
+        self.destination_folder_label.setFixedHeight(25)
         self.destination_folder_label.setMinimumWidth(200)
+        self.destination_folder_label.setSizePolicy(
+            QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed
+        )
         self.addWidget(self.destination_folder_label)
 
         # Spacer
         self.spacer_2 = QWidget(self)
+        self.spacer_2.setProperty("qss", "transparent")
         self.spacer_2.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred
         )

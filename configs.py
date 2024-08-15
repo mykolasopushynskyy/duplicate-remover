@@ -14,12 +14,9 @@ PROJECT_DIR = os.path.dirname(__file__)
 APP_NAME = "Duplicate Remover"
 HOME_DIR = os.path.expanduser("~")
 ICONS_FONT_FILE_PATH = os.path.abspath(os.path.join(PROJECT_DIR, "assets", "icons.ttf"))
-MAIN_WINDOW_STYLE = os.path.abspath(
-    os.path.join(PROJECT_DIR, "assets", "main_window.qss")
-)
-SETTINGS_WINDOW_STYLE = os.path.abspath(
-    os.path.join(PROJECT_DIR, "assets", "settings_window.qss")
-)
+DARK_THEME = os.path.abspath(os.path.join(PROJECT_DIR, "assets", "dark.qss"))
+LIGHT_THEME = os.path.abspath(os.path.join(PROJECT_DIR, "assets", "light.qss"))
+
 CONFIG_FILE_NAME = "config.json"
 DEFAULT_CONFIG_FILE_PATH = os.path.abspath(
     os.path.join(PROJECT_DIR, "assets", CONFIG_FILE_NAME)

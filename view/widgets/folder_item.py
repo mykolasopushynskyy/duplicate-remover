@@ -1,4 +1,5 @@
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QSize
+from PySide6.QtGui import QAbstractFileIconProvider
 from PySide6.QtWidgets import (
     QPushButton,
     QWidget,
@@ -6,10 +7,11 @@ from PySide6.QtWidgets import (
     QLabel,
     QHBoxLayout,
     QVBoxLayout,
+    QFileIconProvider,
 )
 
 from model.dto.folder import FolderDTO
-from util import icons, utils
+from util import utils
 from view.widgets.animated_toggle import AnimatedToggle
 
 
@@ -43,9 +45,9 @@ class FolderItem(QWidget):
         self.v_btn_layout.setSpacing(0)
 
         self.image = QLabel()
-        folder = icons.open_folder(size=40, color=(244, 191, 79))
+        folder = QFileIconProvider().icon(QAbstractFileIconProvider.IconType.Folder)
         self.image.setProperty("qss", "file_icon")
-        self.image.setPixmap(folder.pixmap(folder.availableSizes()[0]))
+        self.image.setPixmap(folder.pixmap(QSize(40, 40)))
         self.image.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.v_icon_layout.addWidget(self.image)
 
@@ -53,22 +55,22 @@ class FolderItem(QWidget):
 
         self.path_label = QLabel(text=utils.short_path(self.folder.path))
         self.path_label.setProperty("qss", "file_label")
-        self.path_label.setFixedWidth(270)
+        self.path_label.setFixedWidth(265)
         self.v_label_layout.addWidget(self.path_label)
 
         self.size_label = QLabel(text=self.folder.size)
         self.size_label.setProperty("qss", "file_size")
-        self.size_label.setFixedWidth(270)
+        self.size_label.setFixedWidth(265)
         self.v_label_layout.addWidget(self.size_label)
 
         self.date_label = QLabel(text=self.folder.date)
         self.date_label.setProperty("qss", "file_date")
-        self.date_label.setFixedWidth(145)
+        self.date_label.setFixedWidth(140)
         self.h_label_layout.addWidget(self.date_label)
 
         self.exclude_label = QLabel(text=self.folder.date)
         self.exclude_label.setProperty("qss", "exclude_label")
-        self.exclude_label.setFixedWidth(120)
+        self.exclude_label.setFixedWidth(115)
         self.exclude_label.setText("Exclude")
         self.exclude_label.setAlignment(
             Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter
@@ -79,12 +81,12 @@ class FolderItem(QWidget):
         self.h_layout.addLayout(self.v_label_layout)
 
         self.remove_button = QPushButton(
-            icon=icons.trash_bin(size=20, color=(150, 53, 47))
+            icon=QFileIconProvider().icon(QAbstractFileIconProvider.IconType.Trashcan)
         )
         self.remove_button.setSizePolicy(
             QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed
         )
-        self.remove_button.setFixedWidth(20)
+        self.remove_button.setFixedWidth(10)
         self.remove_button.clicked.connect(self.on_remove)
         self.v_btn_layout.addWidget(self.remove_button)
 
@@ -92,7 +94,6 @@ class FolderItem(QWidget):
         self.spacer.setSizePolicy(
             QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding
         )
-        self.remove_button.setFixedWidth(20)
         self.spacer.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         self.v_btn_layout.addWidget(self.spacer)
 
@@ -100,7 +101,7 @@ class FolderItem(QWidget):
         self.exclude_check.setSizePolicy(
             QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding
         )
-        self.exclude_check.setFixedWidth(25)
+        self.exclude_check.setFixedWidth(30)
         self.exclude_check.setChecked(self.folder.exclude)
         self.exclude_check.stateChanged.connect(self.on_exclude)
         self.v_btn_layout.addWidget(self.exclude_check)

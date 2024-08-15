@@ -6,7 +6,7 @@ from controller.ds_service import DuplicateScanner
 from model.model import ApplicationModel
 from model.signals import AppSignals
 
-from view.view import DRQApplication
+from view.application import DRQApplication
 import sys
 
 

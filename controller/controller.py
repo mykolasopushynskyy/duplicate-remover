@@ -1,10 +1,8 @@
-import qdarktheme
 from PySide6.QtCore import Slot
 
-from configs import FOLDERS_TO_SCAN, APPLICATION_THEME
+from configs import FOLDERS_TO_SCAN
 from controller.ds_service import DuplicateScanner
 from model.signals import AppSignals
-from util.optional import Optional
 from util.utils import short_path, threaded
 
 from model.model import ApplicationModel
@@ -29,8 +27,6 @@ class ApplicationController:
         self.signals.REMOVE_FOLDER_PRESSED.connect(self.remove_folder)
         self.signals.SCAN_PRESSED.connect(self.scan)
         self.signals.MERGE_PRESSED.connect(self.merge_images)
-        self.signals.CONFIGS_LOAD.connect(self.change_theme)
-        self.signals.CONFIGS_CHANGE.connect(self.change_theme)
 
     @Slot(None)
     def add_folder(self, folder_dto):
@@ -80,11 +76,3 @@ class ApplicationController:
             self.service.merge_results()
         finally:
             self.signals.PROCESSING.emit(False)
-
-    @Slot(dict)
-    def change_theme(self, cfg: dict):
-        (
-            Optional.of(cfg.get(APPLICATION_THEME))
-            .transform(str.lower)
-            .if_present(qdarktheme.setup_theme)
-        )

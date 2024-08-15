@@ -8,7 +8,6 @@ from PySide6.QtWidgets import (
     QApplication,
 )
 
-import configs
 from model.signals import AppSignals
 from view.folders_panel import FoldersList
 from view.results_panel import ResultsList
@@ -79,11 +78,6 @@ class DRQMainWindow(QMainWindow):
         self.status = self.statusBar()
         self.status.showMessage(DEFAULT_STATUS_TEXT)
         self.status.addPermanentWidget(self.progressBar)
-
-        # load style
-        with open(configs.MAIN_WINDOW_STYLE, "r") as file:
-            style = file.read()
-            self.setStyleSheet(style)
 
     @Slot(str)
     def set_message(self, message, progress=0):

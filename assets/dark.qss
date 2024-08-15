@@ -1,0 +1,256 @@
+/* General settings */
+QWidget {
+    background-color: #2B2D30;
+    color: #d3d3d3;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+*[qss = "transparent"] {
+    border: none;
+    background: none;
+}
+
+/* Toolbar */
+DRToolbar {
+    border: none;
+    background: none;
+    background-color: #3d3f41;
+    border-bottom: 1px solid black;
+}
+
+QToolButton {
+    background: none;
+    border-radius: 5px;
+    margin: 3px;
+}
+
+QToolButton:hover {
+    background: #4c4e50;
+    border-radius: 5px;
+    margin: 3px;
+}
+
+/* Status bar */
+QStatusBar {
+    border: none;
+    background: none;
+    background-color: #3d3f41;
+    border-top: 1px solid black;
+}
+
+/* Folder */
+*[qss = "destination_folder"] {
+    border: none;
+    background: #5b5d5f;
+    border-radius: 5px;
+}
+
+/* List */
+QListWidget {
+    border: 1px solid #565a5c;
+    background: #2b2b2b;
+}
+
+QListWidget::item:hover {
+    background: #3a3a3a;
+}
+
+/* Button */
+QPushButton {
+    min-width: 15px;
+    min-height: 15px;
+    background: none;
+    color: #d3d3d3;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+QPushButton:hover {
+    background-color: #4c5052;
+}
+
+QPushButton:pressed {
+    background-color: #5c6062;
+}
+
+/* GroupBox */
+QGroupBox {
+    border-radius: 5px;
+    background: none;
+    padding-top: 10px;
+    border: 1px solid #565a5c;
+}
+
+/* LineEdit */
+QLineEdit {
+    background-color: #3c3f41;
+    border: 1px solid #565a5c;
+    color: #d3d3d3;
+    padding: 3px;
+    border-radius: 5px;
+}
+
+/* ComboBox */
+QComboBox {
+    background-color: #3c3f41;
+    border: 1px solid #565a5c;
+    color: #d3d3d3;
+    padding: 3px;
+    border-radius: 3px;
+}
+
+/* ScrollBar */
+QScrollBar:vertical {
+    background-color: #2b2b2b;
+    width: 8px;
+}
+
+QScrollBar::handle:vertical {
+    background-color: #565a5c;
+    min-height: 20px;
+    border-radius: 4px;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    background-color: #2b2b2b;
+    height: 0;
+}
+
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+    background: none;
+}
+
+QScrollBar:horizontal {
+    background-color: #2b2b2b;
+    width: 8px;
+}
+
+QScrollBar::handle:horizontal {
+    background-color: #565a5c;
+    min-height: 20px;
+    border-radius: 4px;
+}
+
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    background-color: #2b2b2b;
+    height: 0;
+}
+
+QScrollBar::up-arrow:horizontal, QScrollBar::down-arrow:horizontal {
+    background: none;
+}
+
+/* Tabs */
+QTabBar::tab {
+    background-color: #3c3f41;
+    color: #d3d3d3;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+QTabBar::tab:selected {
+    background-color: #565a5c;
+}
+
+/* ToolTip */
+QToolTip {
+    background-color: #565a5c;
+    color: #d3d3d3;
+    border: 1px solid #3c3f41;
+}
+
+/* Folder item */
+*[qss = "file_icon"] {
+    background: none;
+    margin-right: 10px;
+    padding: 0px;
+}
+
+*[qss = "file_label"] {
+    border: none;
+    font-size: 12px;
+    background: none;
+    margin: 0px;
+}
+
+*[qss = "file_size"] {
+    border: none;
+    font-size: 10px;
+    color: #808080;
+    background: none;
+    margin: 0px;
+}
+
+*[qss = "file_date"] {
+    border: none;
+    font-size: 10px;
+    color: #1e90ff;
+    background: none;
+    margin: 0px;
+}
+
+*[qss = "exclude_label"] {
+    border: none;
+    font-size: 10px;
+    color: #808080;
+    background: none;
+    margin: 0px;
+}
+
+/* PlainTextEdit */
+QPlainTextEdit  {
+    border: 1px solid #565a5c;
+    background: #2b2b2b;
+    font-size: 16;
+    font-family: "Courier New", monospace;
+}
+
+/* ProgressBar */
+QProgressBar {
+    border: 1px solid #565a5c;
+    border-radius: 2.5px;
+    height: 5px;
+}
+
+QProgressBar::chunk {
+    background-color: #05b8cc;
+    border-radius: 2.5px;
+    width: 1px;
+    height: 5px;
+}
+
+/* Setting items */
+*[qss = "group-label"] {
+    font-weight: bold;
+    padding: 20px 10px 10px 10px;
+    background: none;
+}
+
+*[qss = "group"] {
+    border: 1px solid #565a5c;
+    border-radius: 10px;
+}
+
+*[qss = "group-top"] {
+    border: 1px solid #565a5c;
+    border-bottom: none;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+*[qss = "group-middle"] {
+    border: 1px solid #565a5c;
+    border-bottom: none;
+    border-radius: 0px;
+}
+
+*[qss = "group-bottom"] {
+    border: 1px solid #565a5c;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
