@@ -26,8 +26,6 @@ from util.optional import Optional
 from view.widgets.animated_toggle import AnimatedToggle
 from view.widgets.setting_elment import SettingsElement
 
-ICON_COLOR_LIGHT = (0, 0, 0)
-ICON_COLOR_DARK = (200, 200, 200)
 ICON_SIZE = 20
 
 
@@ -57,7 +55,7 @@ class SettingsWindow(QWidget):
         # Select folder label
         self.destination_folder = SettingsElement(
             self.signals,
-            icons.picture(size=ICON_SIZE, color=ICON_COLOR_LIGHT),
+            icons.picture(size=ICON_SIZE),
             "Select destination folder",
         )
         self.destination_folder.mousePressEvent = self.select_destination_folder
@@ -74,7 +72,7 @@ class SettingsWindow(QWidget):
         # Delete original files
         self.scan_sys_dirs = SettingsElement(
             self.signals,
-            icons.trash_bin(size=ICON_SIZE, color=ICON_COLOR_LIGHT),
+            icons.trash_bin(size=ICON_SIZE),
             "Delete original files",
         )
         self.scan_sys_dirs.setProperty("qss", "group-middle")
@@ -92,7 +90,7 @@ class SettingsWindow(QWidget):
         # Extension items
         self.extensions_to_scan = SettingsElement(
             self.signals,
-            icons.picture_file(size=ICON_SIZE, color=ICON_COLOR_LIGHT),
+            icons.picture_file(size=ICON_SIZE),
             "Extension to scan",
         )
         self.extensions_to_scan.setProperty("qss", "group-middle")
@@ -109,7 +107,7 @@ class SettingsWindow(QWidget):
         # Parse date from filename
         self.parse_date_from_file_name = SettingsElement(
             self.signals,
-            icons.a_z(size=ICON_SIZE, color=ICON_COLOR_LIGHT),
+            icons.a_z(size=ICON_SIZE),
             "Parse date from filename",
         )
         self.parse_date_from_file_name.setProperty("qss", "group-middle")
@@ -127,7 +125,7 @@ class SettingsWindow(QWidget):
         # Merge filename format
         self.merge_filename_format = SettingsElement(
             self.signals,
-            icons.edit(size=ICON_SIZE, color=ICON_COLOR_LIGHT),
+            icons.edit(size=ICON_SIZE),
             "Merge file name format",
         )
         self.merge_filename_format.setProperty("qss", "group-bottom")
@@ -148,7 +146,7 @@ class SettingsWindow(QWidget):
         # app theme
         self.app_theme = SettingsElement(
             self.signals,
-            icons.adjust(size=ICON_SIZE, color=ICON_COLOR_LIGHT),
+            icons.adjust(size=ICON_SIZE),
             "Choose theme",
         )
         self.app_theme.setProperty("qss", "group")
@@ -205,7 +203,7 @@ class SettingsWindow(QWidget):
             )
         )
         (
-            Optional.of(cfg.get(MERGE_FILE_FORMAT), cfg.get(MERGE_FILE_FORMAT))
+            Optional.of(cfg.get(MERGE_FILE_FORMAT), cfg.get(MERGE_FILE_FORMATS))
             .transform(lambda merge_format, formats: formats.index(merge_format))
             .if_present(self.filename_format_combo.setCurrentIndex)
         )

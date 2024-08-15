@@ -42,14 +42,14 @@ QStatusBar {
 /* Folder */
 *[qss = "destination_folder"] {
     border: none;
-    background: white;
+    background: #ffffff;
     border-radius: 5px;
 }
 
 /* List */
 QListWidget {
     border: 1px solid #c0c0c0;
-    background: white;
+    background: #ffffff;
 }
 
 QListWidget::item:hover {

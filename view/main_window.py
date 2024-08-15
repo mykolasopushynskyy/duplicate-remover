@@ -59,8 +59,8 @@ class DRQMainWindow(QMainWindow):
         self.signals.STATUS_MESSAGE_SET.connect(self.set_message)
 
         # toolbar
-        self.tool_bar = DRToolbar(self.signals)
-        self.addToolBar(Qt.ToolBarArea.TopToolBarArea, self.tool_bar)
+        self.toolbar = DRToolbar(self.signals)
+        self.addToolBar(Qt.ToolBarArea.TopToolBarArea, self.toolbar)
 
         # main window
         self.central_widget = CentralWidget(signals)

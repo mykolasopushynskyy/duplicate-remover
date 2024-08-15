@@ -1,10 +1,11 @@
 from typing import Sequence
 
-from PySide6.QtCore import Slot
+from PySide6.QtCore import Slot, QSize
 from PySide6.QtWidgets import QApplication
 
 import configs
 from model.signals import AppSignals
+from util import icons
 from view.main_window import DRQMainWindow
 from view.theme_detector import detect_system_theme, LIGHT_THEME
 
@@ -24,6 +25,7 @@ class DRQApplication(QApplication):
 
     @Slot(dict)
     def change_theme(self, cfg: dict):
+        # TODO Use QSS as template and switch colors only
         cfg_theme = cfg.get(configs.APPLICATION_THEME)
 
         # return if no theme change
@@ -44,3 +46,46 @@ class DRQApplication(QApplication):
         # set theme
         with open(theme_to_set, "r") as theme_file:
             self.setStyleSheet(theme_file.read())
+
+        toolbar = self.window.toolbar
+        settings = self.window.toolbar.settings
+
+        themed_icon_color = (
+            (90, 90, 90) if cfg_theme == LIGHT_THEME else (206, 208, 214)
+        )
+
+        # toolbar icons
+        toolbar.add_folder_btn.setIcon(icons.plus(size=20, color=themed_icon_color))
+        toolbar.exclude_folder_btn.setIcon(
+            icons.minus(size=20, color=themed_icon_color)
+        )
+        toolbar.search_duplicates_btn.setIcon(
+            icons.search(size=20, color=themed_icon_color)
+        )
+        toolbar.merge_duplicates_btn.setIcon(
+            icons.picture(size=20, color=themed_icon_color)
+        )
+        toolbar.destination_folder_btn.setIcon(
+            icons.open_folder(size=20, color=themed_icon_color)
+        )
+        toolbar.settings_btn.setIcon(icons.configs(size=20, color=themed_icon_color))
+
+        # settings icons
+        settings.destination_folder.icon_label.setPixmap(
+            icons.picture(size=20, color=themed_icon_color).pixmap(QSize(20, 20))
+        )
+        settings.scan_sys_dirs.icon_label.setPixmap(
+            icons.trash_bin(size=20, color=themed_icon_color).pixmap(QSize(20, 20))
+        )
+        settings.extensions_to_scan.icon_label.setPixmap(
+            icons.picture_file(size=20, color=themed_icon_color).pixmap(QSize(20, 20))
+        )
+        settings.parse_date_from_file_name.icon_label.setPixmap(
+            icons.a_z(size=20, color=themed_icon_color).pixmap(QSize(20, 20))
+        )
+        settings.merge_filename_format.icon_label.setPixmap(
+            icons.edit(size=20, color=themed_icon_color).pixmap(QSize(20, 20))
+        )
+        settings.app_theme.icon_label.setPixmap(
+            icons.adjust(size=20, color=themed_icon_color).pixmap(QSize(20, 20))
+        )

@@ -1,6 +1,6 @@
 from PIL import Image, ImageFont, ImageDraw
 from PIL.ImageQt import toqpixmap
-from PySide6.QtGui import QIcon
+from PySide6.QtGui import QIcon, QPixmap
 
 from configs import ICONS_FONT_FILE_PATH
 
@@ -112,3 +112,8 @@ def edit(size=16, color=(80, 76, 74)):
 
 def adjust(size=16, color=(80, 76, 74)):
     return get_icon(ADJUST_SYM, size, color)
+
+
+class QTPixmap(QPixmap):
+    def __init__(self, pixmap: QPixmap):
+        super().__init__(pixmap)
