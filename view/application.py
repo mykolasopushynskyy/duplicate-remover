@@ -83,9 +83,6 @@ class DRQApplication(QApplication):
         settings.parse_date_from_file_name.icon_label.setPixmap(
             icons.a_z(size=20, color=themed_icon_color).pixmap(QSize(20, 20))
         )
-        settings.merge_filename_format.icon_label.setPixmap(
-            icons.edit(size=20, color=themed_icon_color).pixmap(QSize(20, 20))
-        )
         settings.app_theme.icon_label.setPixmap(
             icons.adjust(size=20, color=themed_icon_color).pixmap(QSize(20, 20))
         )

@@ -156,14 +156,16 @@ class DuplicateScanner:
 
     def merge_results(self):
         parse_filename = self.model.pase_filename()
+        image_filename_format = self.model.image_filename_format()
         actions = sum([1 + len(files) for files in self.model.duplicates])
         create_action = 0
         delete_action = 0
         for i, files in enumerate(self.model.duplicates):
-            old_file_path = str(min([file for file in files], key=len))
-            old_file_dir, file_name = os.path.split(old_file_path)
-
             creation_date = get_min_image_date(files, parse_filename)
+
+            old_file_path = str(min([file for file in files], key=len))
+            _, file_name = os.path.split(old_file_path)
+            file_name = f"{creation_date.strftime(image_filename_format)}_{file_name}"
 
             new_file_dir = os.path.abspath(
                 os.path.join(self.model.merge_folder(), str(creation_date.year))

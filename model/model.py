@@ -9,7 +9,7 @@ from configs import (
     FOLDERS_TO_SCAN,
     EXTENSIONS_TO_SCAN,
     PARSE_DATE_FROM_FILENAME,
-    DELETE_ORIGINAL_FILES,
+    DELETE_ORIGINAL_FILES, IMAGE_FILENAME_FORMAT,
 )
 from model.signals import AppSignals
 
@@ -38,6 +38,9 @@ class ApplicationModel(ConfigManager):
 
     def pase_filename(self):
         return self.get(PARSE_DATE_FROM_FILENAME)
+
+    def image_filename_format(self):
+        return self.get(IMAGE_FILENAME_FORMAT)
 
     def get_system_folders_to_skip(self):
         system = platform.system()

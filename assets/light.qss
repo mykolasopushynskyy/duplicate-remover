@@ -41,7 +41,7 @@ QStatusBar {
 
 /* Folder */
 *[qss = "destination_folder"] {
-    border: none;
+    border: 1px solid #c0c0c0;
     background: #ffffff;
     border-radius: 5px;
 }
@@ -89,15 +89,6 @@ QLineEdit {
     color: #2b2b2b;
     padding: 3px;
     border-radius: 5px;
-}
-
-/* ComboBox */
-QComboBox {
-    background-color: #ffffff;
-    border: 1px solid #c0c0c0;
-    color: #2b2b2b;
-    padding: 3px;
-    border-radius: 3px;
 }
 
 /* ScrollBar */

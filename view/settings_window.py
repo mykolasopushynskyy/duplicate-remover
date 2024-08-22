@@ -14,9 +14,7 @@ from configs import (
     DELETE_ORIGINAL_FILES,
     MERGE_FOLDER,
     PARSE_DATE_FROM_FILENAME,
-    MERGE_FILE_FORMAT,
     APPLICATION_THEME,
-    MERGE_FILE_FORMATS,
     APPLICATION_THEMES,
     HOME_DIR,
 )
@@ -64,6 +62,8 @@ class SettingsWindow(QWidget):
 
         self.destination_folder_label = QLabel(text="Folder address")
         self.destination_folder_label.setProperty("qss", "destination_folder")
+        self.destination_folder_label.setMinimumWidth(250)
+        self.destination_folder_label.setFixedHeight(26)
         self.destination_folder_label.setSizePolicy(
             QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred
         )
@@ -110,7 +110,7 @@ class SettingsWindow(QWidget):
             icons.a_z(size=ICON_SIZE),
             "Parse date from filename",
         )
-        self.parse_date_from_file_name.setProperty("qss", "group-middle")
+        self.parse_date_from_file_name.setProperty("qss", "group-bottom")
         self.layout.addWidget(self.parse_date_from_file_name)
 
         self.parse_filename_date_toggle = AnimatedToggle()
@@ -121,22 +121,6 @@ class SettingsWindow(QWidget):
             QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred
         )
         self.parse_date_from_file_name.addWidget(self.parse_filename_date_toggle)
-
-        # Merge filename format
-        self.merge_filename_format = SettingsElement(
-            self.signals,
-            icons.edit(size=ICON_SIZE),
-            "Merge file name format",
-        )
-        self.merge_filename_format.setProperty("qss", "group-bottom")
-        self.layout.addWidget(self.merge_filename_format)
-
-        self.filename_format_combo = QComboBox()
-        self.filename_format_combo.setSizePolicy(
-            QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred
-        )
-        self.filename_format_combo.currentIndexChanged.connect(self.change_merge_format)
-        self.merge_filename_format.addWidget(self.filename_format_combo)
 
         # appearance
         self.appearance_label = QLabel("Appearance")
@@ -196,17 +180,6 @@ class SettingsWindow(QWidget):
                 self.parse_filename_date_toggle.setChecked
             )
         )
-        # merge file format dropbox config
-        (
-            Optional.of(cfg.get(MERGE_FILE_FORMATS)).if_present(
-                self.filename_format_combo.addItems
-            )
-        )
-        (
-            Optional.of(cfg.get(MERGE_FILE_FORMAT), cfg.get(MERGE_FILE_FORMATS))
-            .transform(lambda merge_format, formats: formats.index(merge_format))
-            .if_present(self.filename_format_combo.setCurrentIndex)
-        )
         # application theme dropbox config
         (
             Optional.of(cfg.get(APPLICATION_THEMES)).if_present(
@@ -242,11 +215,6 @@ class SettingsWindow(QWidget):
     def parse_date_from_filename(self, state):
         result = True if state > 0 else False
         self.signals.CONFIGS_CHANGE.emit({PARSE_DATE_FROM_FILENAME: result})
-
-    @Slot(dict)
-    def change_merge_format(self, index):
-        text = self.filename_format_combo.itemText(index)
-        self.signals.CONFIGS_CHANGE.emit({MERGE_FILE_FORMAT: text})
 
     @Slot(dict)
     def change_appearance_theme(self, index):

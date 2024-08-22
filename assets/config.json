@@ -4,10 +4,9 @@
     "delete_original_files": false,
     "extensions_to_scan": ".jpg .jpeg .heic .cr2",
     "parse_date_from_filename": true,
-    "merge_file_formats": ["Shortest file name", "Earliest creation date"],
-    "merge_file_format": "Shortest file name",
     "application_themes": ["Light", "Dark", "Auto"],
     "application_theme": "Auto",
+    "image_filename_format": "%Y-%m-%d_%H:%M:%S",
     "system_folders_to_skip": {
         "Windows": [
             "\\Windows",
